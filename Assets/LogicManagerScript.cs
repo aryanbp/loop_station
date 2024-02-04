@@ -24,11 +24,30 @@ public class LogicManagerScript : MonoBehaviour
     {
         
     }
+    public void reset()
+    {
+        if (looping)
+        {
+            children[1].gameObject.SetActive(false);
+            children[2].gameObject.SetActive(false);
+            children[3].gameObject.SetActive(false);
+            on = false;
+            off = false;
+            looping = false;
+        }
+}
     public void Click() 
     {
+
         if (on)
         {
-            if (looping)
+
+            if (looping & off)
+            {
+                off = false;
+                children[2].gameObject.SetActive(true);
+            }
+            else if (looping)
             {
                 children[2].gameObject.SetActive(false);
                 children[1].gameObject.SetActive(true);
@@ -37,7 +56,7 @@ public class LogicManagerScript : MonoBehaviour
             }
             else
             {
-                children[1].gameObject.SetActive(false);
+                children[1].gameObject.SetActive(!on); 
                 children[3].gameObject.SetActive(false);
                 children[2].gameObject.SetActive(true);
                 looping = true;
