@@ -4,15 +4,17 @@ using System.IO;
 using NAudio.Wave;
 using System;
 using System.Net;
+using UnityEditor;
 
 public class Audio : MonoBehaviour
 {
     WaveInEvent waveIn;
     WaveFileWriter writer;
     bool isRecording = false;
+    bool mute = false;
 
-    public Button startRecordingButton;
-    public Button stopRecordingButton;
+    public Button[] startRecordingButtons;
+    public Button[] stopRecordingButtons;
     public AudioSource audioSource;
 
     MemoryStream recordedAudioStream;
@@ -20,8 +22,13 @@ public class Audio : MonoBehaviour
     public void Start()
     {
         // Set up the buttons
-        startRecordingButton.onClick.AddListener(StartRecording);
-        stopRecordingButton.onClick.AddListener(StopRecording);
+        for(int  i = 0; i < startRecordingButtons.Length; i++) { 
+            startRecordingButtons[i].onClick.AddListener(StartRecording); 
+        }
+        for (int i = 0; i < startRecordingButtons.Length; i++)
+        {
+            stopRecordingButtons[i].onClick.AddListener(StopRecording);
+        }
     }
 
     public void StartRecording()
@@ -69,6 +76,27 @@ public class Audio : MonoBehaviour
 
             isRecording = false;
         }
+    }
+    public void PausePlayRecording()
+    {
+        if (mute)
+        {
+            audioSource.mute=false;
+            isRecording = true;
+            mute = false;
+        }
+        else
+        {
+            audioSource.mute = true;
+            isRecording = false;
+            mute = true;
+        }
+    }
+    public void ClearRecording()
+    {
+        audioSource.Stop();
+        audioSource.clip=null;
+        isRecording = false;
     }
 
     void OnDataAvailable(object sender, WaveInEventArgs e)
