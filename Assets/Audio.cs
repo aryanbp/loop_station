@@ -82,13 +82,11 @@ public class Audio : MonoBehaviour
         if (mute)
         {
             audioSource.mute=false;
-            isRecording = true;
             mute = false;
         }
         else
         {
             audioSource.mute = true;
-            isRecording = false;
             mute = true;
         }
     }

@@ -1,17 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LogicManagerScript : MonoBehaviour
 {
     public GameObject controler;
+    public GameObject playBar;
+    public GameObject recorddubBar;
+    public GameObject pauseBar;
+
     public TextMeshProUGUI Label;
     public bool on=false;
     public bool off=false;
     public bool looping=false;
     public List<Transform> children = new List<Transform>();
+
+    public Button[] startRecordingButtons;
+    public Button[] stopRecordingButtons;
+
+    public Audio audio;
 
     // Start is called before the first frame update
     void Start()
@@ -19,6 +29,15 @@ public class LogicManagerScript : MonoBehaviour
         //AudioSource audioSource = GetComponent<AudioSource>();
         //audioSource.clip = Microphone.Start(Microphone.devices[0], true, 10, 44100);
         //audioSource.Play();
+
+        /*for (int i = 0; i < startRecordingButtons.Length; i++)
+        {
+            startRecordingButtons[i].onClick.AddListener(audio.StartRecording);
+        }
+        for (int i = 0; i < startRecordingButtons.Length; i++)
+        {
+            stopRecordingButtons[i].onClick.AddListener(audio.StopRecording);
+        }*/
 
         Label.text = "";
         foreach (Transform c in controler.transform)
@@ -60,6 +79,9 @@ public class LogicManagerScript : MonoBehaviour
                 off = false;
                 children[2].gameObject.SetActive(true);
                 Label.text = "Looping";
+                pauseBar.SetActive(false);
+                playBar.SetActive(true);
+                playBar.GetComponent<ProgressBar>().Func_PlayUIAnim();
             }
             else if (looping)
             {
@@ -67,6 +89,10 @@ public class LogicManagerScript : MonoBehaviour
                 children[1].gameObject.SetActive(true);
                 looping = false;
                 Label.text = "Overdubbing";
+                playBar.SetActive(false);
+                playBar.GetComponent<ProgressBar>().Func_StopUIAnim();
+                recorddubBar.SetActive(true);
+                recorddubBar.GetComponent<ProgressBar>().Func_PlayUIAnim();
 
             }
             else
@@ -76,6 +102,10 @@ public class LogicManagerScript : MonoBehaviour
                 children[2].gameObject.SetActive(true);
                 Label.text = "Looping";
                 looping = true;
+                recorddubBar.SetActive(false);
+                recorddubBar.GetComponent<ProgressBar>().Func_StopUIAnim();
+                playBar.SetActive(true);
+                playBar.GetComponent<ProgressBar>().Func_PlayUIAnim();
             }
 
         }
@@ -84,6 +114,9 @@ public class LogicManagerScript : MonoBehaviour
             on= true;
             children[3].gameObject.SetActive(true);
             Label.text = "Recording";
+            recorddubBar.SetActive(true);
+            recorddubBar.GetComponent<ProgressBar>().Func_PlayUIAnim();
+
         }
     }
     public void Pause() 
@@ -93,6 +126,9 @@ public class LogicManagerScript : MonoBehaviour
             children[2].gameObject.SetActive(true);
             off = false;
             Label.text = "Looping";
+            pauseBar.SetActive(false);
+            playBar.SetActive(true);
+            playBar.GetComponent<ProgressBar>().Func_PlayUIAnim();
 
         }
         else if(looping)
@@ -100,6 +136,9 @@ public class LogicManagerScript : MonoBehaviour
             children[2].gameObject.SetActive(false);
             off = true;
             Label.text = "Pause";
+            playBar.SetActive(false);
+            playBar.GetComponent<ProgressBar>().Func_StopUIAnim();
+            pauseBar.SetActive(true);
         }
     }
 }

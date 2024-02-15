@@ -9,7 +9,7 @@ public class ProgressBar : MonoBehaviour
     public Image m_Image;
 
     public Sprite[] m_SpriteArray;
-    public float m_Speed = .02f;
+    public float m_Speed = .04f;
 
     private int m_IndexSprite;
     Coroutine m_CorotineAnim;
