@@ -38,7 +38,6 @@ public class LogicManagerScript : MonoBehaviour
         {
             stopRecordingButtons[i].onClick.AddListener(audio.StopRecording);
         }*/
-
         Label.text = "";
         foreach (Transform c in controler.transform)
         { 
@@ -53,7 +52,7 @@ public class LogicManagerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
     public void reset()
     {
@@ -66,6 +65,9 @@ public class LogicManagerScript : MonoBehaviour
             off = false;
             looping = false;
             Label.text = "";
+            pauseBar.SetActive(false);
+            playBar.SetActive(false);
+            playBar.GetComponent<ProgressBar>().Func_StopUIAnim();
         }
 }
     public void Click() 

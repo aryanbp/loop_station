@@ -5,6 +5,8 @@ using NAudio.Wave;
 using System;
 using System.Net;
 using UnityEditor;
+using Unity.VisualScripting;
+using System.Collections.Generic;
 
 public class Audio : MonoBehaviour
 {
@@ -15,7 +17,8 @@ public class Audio : MonoBehaviour
 
     public Button[] startRecordingButtons;
     public Button[] stopRecordingButtons;
-    public AudioSource audioSource;
+    public List<AudioSource> audioSources = new List<AudioSource>();
+    public Slider slider;
 
     MemoryStream recordedAudioStream;
 
@@ -30,7 +33,6 @@ public class Audio : MonoBehaviour
             stopRecordingButtons[i].onClick.AddListener(StopRecording);
         }
     }
-
     public void StartRecording()
     {
         if (!isRecording)
@@ -71,9 +73,17 @@ public class Audio : MonoBehaviour
             recordedClip.SetData(BytesToFloat(buffer), 0);
 
             // Play the recorded audio clip
+            // Instantiate a new GameObject to hold the audio source
+            GameObject newAudioObject = new GameObject("NewAudioSource");
+
+            // Add an AudioSource component to the new GameObject
+            AudioSource audioSource = newAudioObject.AddComponent<AudioSource>();
+
             audioSource.clip = recordedClip;
             audioSource.Play();
+            audioSource.loop = true;   
 
+            audioSources.Add(audioSource);
             isRecording = false;
         }
     }
@@ -81,19 +91,48 @@ public class Audio : MonoBehaviour
     {
         if (mute)
         {
-            audioSource.mute=false;
-            mute = false;
+            foreach (AudioSource audioSource in audioSources) {
+                audioSource.mute = false;
+                mute = false;
+            }
+                
         }
         else
         {
-            audioSource.mute = true;
-            mute = true;
+            foreach (AudioSource audioSource in audioSources)
+            {
+                audioSource.mute = true;
+                mute = true;
+            }
         }
+    }
+    public void playRecording()
+    {
+        if (mute)
+        {
+            foreach (AudioSource audioSource in audioSources)
+            {
+                audioSource.mute = false;
+                mute = false;
+            }
+        }
+    }
+    public void undoRecording() {
+        int index = audioSources.Count - 1;
+        audioSources[index].Stop();
+        audioSources.RemoveAt(index);
+
+        Destroy(audioSources[index].gameObject);
     }
     public void ClearRecording()
     {
-        audioSource.Stop();
-        audioSource.clip=null;
+        foreach (AudioSource audioSource in audioSources)
+        {
+            audioSource.Stop();
+            audioSource.clip = null;
+            Destroy(audioSource.gameObject);
+        }
+        audioSources.Clear();
         isRecording = false;
     }
 
