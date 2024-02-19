@@ -32,6 +32,13 @@ public class Audio : MonoBehaviour
         {
             stopRecordingButtons[i].onClick.AddListener(StopRecording);
         }
+        slider.onValueChanged.AddListener(SetVolumne);
+    }
+    public void SetVolumne(float value) {
+        foreach (AudioSource audioSource in audioSources)
+        { 
+            audioSource.volume = value/100;
+        }
     }
     public void StartRecording()
     {

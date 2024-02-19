@@ -18,11 +18,6 @@ public class LogicManagerScript : MonoBehaviour
     public bool looping=false;
     public List<Transform> children = new List<Transform>();
 
-    public Button[] startRecordingButtons;
-    public Button[] stopRecordingButtons;
-
-    public Audio audio;
-
     // Start is called before the first frame update
     void Start()
     {
