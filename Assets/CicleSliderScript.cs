@@ -1,23 +1,71 @@
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class CicleSliderScript : MonoBehaviour
+public class KnobController : MonoBehaviour
 {
-    [SerializeField] Transform handle;
-    [SerializeField] Text valTxt;
-    Vector3 mousePos;
+    // Adjust this value to control the rotation speed
+    public float rotationSpeed = 1.0f;
 
-    public void onHandleDrag()
+    // Z indices for the minimum and maximum rotation angles
+    public float minZIndex = 0f;
+    public float maxZIndex = 359.9f;
+
+    // Flag to track if the mouse is clicking on the knob
+    private bool isMouseClicking = false;
+
+    // Update text of LED Label
+    public TextMeshProUGUI Label;
+
+    // Update is called once per frame
+    void Update()
     {
-        mousePos = Input.mousePosition;
-        Vector2 dir=mousePos - handle.position;
-        float angle = Mathf.Atan2(dir.y,dir.x)*Mathf.Rad2Deg;
-        angle = (angle <= 0) ? (360 + angle) : angle;
-        if(angle<=10 || angle >= 50)
+        // If the mouse button is pressed and the cursor is hovering over the knob
+        if (Input.GetMouseButtonDown(0) && IsCursorOverKnob())
         {
-            Quaternion r = Quaternion.AngleAxis(angle + 10f, Vector3.forward);
-            handle.rotation = r;
-            angle = ((angle>10)? (angle-360): angle)+45;
+            isMouseClicking = true;
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            isMouseClicking = false;
+        }
+
+        // If the mouse is clicking on the knob, rotate it
+        if (isMouseClicking)
+        {
+            // Get the mouse movement along the x-axis
+            float mouseX = Input.GetAxis("Mouse X");
+
+            // Calculate the rotation amount based on mouse movement
+            float rotationAmount = mouseX * rotationSpeed;
+
+            // Rotate the knob around its z-axis
+            float newZIndex = Mathf.Clamp(transform.eulerAngles.z + rotationAmount, minZIndex, maxZIndex);
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, newZIndex);
+
+            // Calculate the value based on the rotation angle
+            float value = CalculateValueFromRotation(newZIndex);
+            Label.text = value.ToString();
         }
     }
+
+    // Check if the cursor is hovering over the knob
+    bool IsCursorOverKnob()
+    {
+        // Cast a ray from the mouse position to detect if it hits the knob collider
+        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+        return hit.collider != null && hit.collider.gameObject == gameObject;
+    }
+
+    // Calculate the value based on the rotation angle
+    int CalculateValueFromRotation(float rotationAngle)
+    {
+        // Map the rotation angle to a value between 1 and 100
+        float mappedValue = Mathf.InverseLerp(minZIndex, maxZIndex, rotationAngle);
+        float value = Mathf.Lerp(1, 100, mappedValue);
+
+        // Round the value to the nearest integer
+        int roundedValue = Mathf.RoundToInt(value);
+        return roundedValue;
+    }
+
 }

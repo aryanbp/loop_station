@@ -40,6 +40,7 @@ public class Audio : MonoBehaviour
             audioSource.volume = value/100;
         }
     }
+
     public void StartRecording()
     {
         if (!isRecording)
