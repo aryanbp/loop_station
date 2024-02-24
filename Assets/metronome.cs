@@ -3,52 +3,56 @@ using UnityEngine.UI;
 
 public class Metronome : MonoBehaviour
 {
-    public float tempo = 120; // Beats per minute
-    public AudioClip tickSound; // Sound to play on each tick
-    private bool isPlaying = false;
+    public float beatsPerMinute = 120f; // Initial BPM
+    public AudioClip metronomeSound; // Sound for the metronome
     private AudioSource audioSource;
+    private float beatInterval;
+    private float beatTimer;
+    private bool isRunning = false; // Flag to track if the metronome is running
 
     void Start()
     {
-        // Get the AudioSource component attached to the same GameObject or add one if not present
+        // Calculate the interval between beats based on BPM
+        beatInterval = 60f / beatsPerMinute;
+
+        // Get the AudioSource component attached to this GameObject
         audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-        {
-            audioSource = gameObject.AddComponent<AudioSource>();
-        }
-
-        // Set the audio clip
-        audioSource.clip = tickSound;
-        audioSource.loop = true;
-
+        // Set the AudioClip for the AudioSource
+        audioSource.clip = metronomeSound;
     }
 
+    void Update()
+    {
+        if (isRunning)
+        {
+            // Update the beat timer
+            beatTimer -= Time.deltaTime;
+
+            // If it's time for a beat
+            if (beatTimer <= 0f)
+            {
+                // Play the metronome sound
+                audioSource.Play();
+
+                // Reset the beat timer
+                beatTimer += beatInterval;
+            }
+        }
+
+        // Recalculate the interval between beats based on the current BPM
+        beatInterval = 60f / beatsPerMinute;
+    }
+
+    // Function to start or stop the metronome
     public void OnMetronome()
     {
-        if (!isPlaying)
+        isRunning = !isRunning;
+        if (isRunning)
         {
-            // Calculate the playback speed based on tempo
-            float speed = tempo / 60f;
-            ChangeAudioSpeed(audioSource, speed);
+            // Start the metronome
+            beatTimer = beatInterval;
+            // Play the metronome sound immediately when starting
+            audioSource.Play();
         }
-    }
-
-    void ChangeAudioSpeed(AudioSource audioSource, float newSpeed)
-    {
-        // Get the audio data
-        float[] data = new float[audioSource.clip.samples * audioSource.clip.channels];
-        audioSource.clip.GetData(data, 0);
-
-        // Set the playback speed
-        audioSource.pitch = 1f;
-
-        // Create a new audio clip with adjusted speed
-        AudioClip newClip = AudioClip.Create("TempClip", data.Length, audioSource.clip.channels, audioSource.clip.frequency, false);
-        newClip.SetData(data, 0);
-        audioSource.clip = newClip;
-
-        // Set the new playback speed
-        audioSource.pitch = newSpeed;
-        audioSource.Play();
     }
 }
