@@ -63,16 +63,16 @@ public class CenterControlLogic : MonoBehaviour
         if (!tempo && !startMetronom)
         {
             tempo = true;
-            tapTempo.GetComponent<ProgressBar>().Func_PlayUIAnim();
-
+/*            tapTempo.GetComponent<ProgressBar>().Func_PlayUIAnim();
+*/
         }
         else
         {
             if (!startMetronom)
             {
                 tempo = false;
-                tapTempo.GetComponent<ProgressBar>().Func_StopUIAnim();
-            }
+/*                tapTempo.GetComponent<ProgressBar>().Func_StopUIAnim();
+*/            }
         }
     }
     public void StartStop()
@@ -84,9 +84,13 @@ public class CenterControlLogic : MonoBehaviour
             startStop.transform.GetChild(1).gameObject.SetActive(false);
             if (!tempo)
             {
-                tapTempo.GetComponent<ProgressBar>().Func_PlayUIAnim();
-
+/*                tapTempo.GetComponent<ProgressBar>().Func_PlayUIAnim();
+*/
             }
+            else
+            {
+/*                tapTempo.GetComponent <ProgressBar>().Func_RestartUIAnim();
+*/            }
 
         }
         else
@@ -95,8 +99,8 @@ public class CenterControlLogic : MonoBehaviour
             tempo = false;
             startStop.transform.GetChild(0).gameObject.SetActive(false);
             startStop.transform.GetChild(1).gameObject.SetActive(true);
-            tapTempo.GetComponent<ProgressBar>().Func_StopUIAnim();
-
+/*            tapTempo.GetComponent<ProgressBar>().Func_StopUIAnim();
+*/
         }
     }
 }

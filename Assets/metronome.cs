@@ -5,6 +5,7 @@ public class Metronome : MonoBehaviour
 {
     public float beatsPerMinute = 120f; // Initial BPM
     public AudioClip metronomeSound; // Sound for the metronome
+    public GameObject tapTempo;
     private AudioSource audioSource;
     private float beatInterval;
     private float beatTimer;
@@ -27,7 +28,6 @@ public class Metronome : MonoBehaviour
         {
             // Update the beat timer
             beatTimer -= Time.deltaTime;
-
             // If it's time for a beat
             if (beatTimer <= 0f)
             {
@@ -36,6 +36,12 @@ public class Metronome : MonoBehaviour
 
                 // Reset the beat timer
                 beatTimer += beatInterval;
+
+                // Enable tap tempo image when the sound starts
+                tapTempo.SetActive(true);
+
+                // Schedule disabling tap tempo image after the sound ends
+                Invoke("DisableTapTempo", metronomeSound.length);
             }
         }
 
@@ -54,5 +60,18 @@ public class Metronome : MonoBehaviour
             // Play the metronome sound immediately when starting
             audioSource.Play();
         }
+        else
+        {
+            // Stop the metronome sound
+            audioSource.Stop();
+            // Disable tap tempo image
+            tapTempo.SetActive(false);
+        }
+    }
+
+    // Method to disable tap tempo image
+    private void DisableTapTempo()
+    {
+        tapTempo.SetActive(false);
     }
 }

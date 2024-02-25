@@ -5,15 +5,15 @@ using UnityEngine.UI;
 
 public class ProgressBar : MonoBehaviour
 {
-
     public Image m_Image;
 
     public Sprite[] m_SpriteArray;
     public float m_Speed = .04f;
 
     private int m_IndexSprite;
-    Coroutine m_CorotineAnim;
-    bool IsDone;
+    private Coroutine m_CorotineAnim;
+    private bool IsDone;
+
     public void Func_PlayUIAnim()
     {
         IsDone = false;
@@ -23,8 +23,17 @@ public class ProgressBar : MonoBehaviour
     public void Func_StopUIAnim()
     {
         IsDone = true;
-        StopCoroutine(Func_PlayAnimUI());
+        if (m_CorotineAnim != null)
+            StopCoroutine(m_CorotineAnim);
     }
+
+    public void Func_RestartUIAnim()
+    {
+        Func_StopUIAnim();
+        m_IndexSprite = 0;
+        Func_PlayUIAnim();
+    }
+
     IEnumerator Func_PlayAnimUI()
     {
         yield return new WaitForSeconds(m_Speed);
@@ -34,7 +43,7 @@ public class ProgressBar : MonoBehaviour
         }
         m_Image.sprite = m_SpriteArray[m_IndexSprite];
         m_IndexSprite += 1;
-        if (IsDone == false)
+        if (!IsDone)
             m_CorotineAnim = StartCoroutine(Func_PlayAnimUI());
     }
 }
