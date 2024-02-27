@@ -11,11 +11,13 @@ public class LogicManagerScript : MonoBehaviour
     public GameObject playBar;
     public GameObject recorddubBar;
     public GameObject pauseBar;
+    public GameObject editButton;
 
     public TextMeshProUGUI Label;
     public bool on=false;
     public bool off=false;
     public bool looping=false;
+    public bool editOn = false;
     public List<Transform> children = new List<Transform>();
 
     // Start is called before the first frame update
@@ -56,6 +58,9 @@ public class LogicManagerScript : MonoBehaviour
             children[1].gameObject.SetActive(false);
             children[2].gameObject.SetActive(false);
             children[3].gameObject.SetActive(false);
+            children[5].gameObject.transform.GetChild(1).gameObject.GetComponent<ProgressBar>().Func_StopUIAnim();
+            children[5].gameObject.transform.GetChild(0).gameObject.SetActive(true);
+            children[5].gameObject.transform.GetChild(1).gameObject.SetActive(false);
             on = false;
             off = false;
             looping = false;
@@ -79,6 +84,8 @@ public class LogicManagerScript : MonoBehaviour
                 pauseBar.SetActive(false);
                 playBar.SetActive(true);
                 playBar.GetComponent<ProgressBar>().Func_PlayUIAnim();
+                children[5].gameObject.transform.GetChild(0).gameObject.SetActive(false);
+                children[5].gameObject.transform.GetChild(1).gameObject.SetActive(true);
             }
             else if (looping)
             {
@@ -90,6 +97,7 @@ public class LogicManagerScript : MonoBehaviour
                 playBar.GetComponent<ProgressBar>().Func_StopUIAnim();
                 recorddubBar.SetActive(true);
                 recorddubBar.GetComponent<ProgressBar>().Func_PlayUIAnim();
+                EditAnim();
 
             }
             else
@@ -97,6 +105,11 @@ public class LogicManagerScript : MonoBehaviour
                 children[1].gameObject.SetActive(!on); 
                 children[3].gameObject.SetActive(false);
                 children[2].gameObject.SetActive(true);
+                if (children[5].gameObject.transform.GetChild(0).gameObject)
+                {
+                    children[5].gameObject.transform.GetChild(0).gameObject.SetActive(false);
+                    children[5].gameObject.transform.GetChild(1).gameObject.SetActive(true);
+                }
                 Label.text = "Looping";
                 looping = true;
                 recorddubBar.SetActive(false);
@@ -135,7 +148,25 @@ public class LogicManagerScript : MonoBehaviour
             Label.text = "Pause";
             playBar.SetActive(false);
             playBar.GetComponent<ProgressBar>().Func_StopUIAnim();
-            pauseBar.SetActive(true);
+            pauseBar.SetActive(true); 
+            if (editOn)
+            {
+                children[5].gameObject.transform.GetChild(1).gameObject.GetComponent<ProgressBar>().Func_StopUIAnim();
+                children[5].gameObject.transform.GetChild(1).gameObject.SetActive(true);
+            }
+        }
+    }
+    public void EditAnim() {
+        if (!editOn && on && looping)
+        {
+            editOn = true;
+            children[5].gameObject.transform.GetChild(1).gameObject.GetComponent<ProgressBar>().Func_PlayUIAnim();
+        }
+        else if(editOn)
+        {
+            editOn = false;
+            children[5].gameObject.transform.GetChild(1).gameObject.GetComponent<ProgressBar>().Func_StopUIAnim();
+            children[5].gameObject.transform.GetChild(1).gameObject.SetActive(true);
         }
     }
 }
