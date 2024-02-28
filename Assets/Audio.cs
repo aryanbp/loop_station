@@ -19,6 +19,7 @@ public class Audio : MonoBehaviour
     public Button[] stopRecordingButtons;
     public List<AudioSource> audioSources = new List<AudioSource>();
     public Slider slider;
+    public LogicManagerScript logicUI;
 
     MemoryStream recordedAudioStream;
 
@@ -83,6 +84,7 @@ public class Audio : MonoBehaviour
             // Play the recorded audio clip
             // Instantiate a new GameObject to hold the audio source
             GameObject newAudioObject = new GameObject("NewAudioSource");
+            newAudioObject.tag = "Audio";
 
             // Add an AudioSource component to the new GameObject
             AudioSource audioSource = newAudioObject.AddComponent<AudioSource>();

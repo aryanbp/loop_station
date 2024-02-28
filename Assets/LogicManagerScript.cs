@@ -18,7 +18,11 @@ public class LogicManagerScript : MonoBehaviour
     public bool off=false;
     public bool looping=false;
     public bool editOn = false;
+    public bool sync = false;
     public List<Transform> children = new List<Transform>();
+    AudioSource recordedAudio;
+    private float clipLength;
+
 
     // Start is called before the first frame update
     void Start()
@@ -49,7 +53,17 @@ public class LogicManagerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (looping)
+        {
+            recordedAudio=GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioSource>();
+            clipLength = recordedAudio.clip.length;
+            if (recordedAudio.time>=0 && recordedAudio.time<=0.005)
+            {
+                // Perform your function here when the audio clip finishes
+                Debug.Log(recordedAudio.time+"Audio clip finished playing.");
+                sync = true;
+            }
+        }
     }
     public void reset()
     {
