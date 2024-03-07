@@ -183,4 +183,7 @@ public class LogicManagerScript : MonoBehaviour
             children[5].gameObject.transform.GetChild(1).gameObject.SetActive(true);
         }
     }
+    public void EditButtonClick() {
+        
+    }
 }
