@@ -12,8 +12,10 @@ public class LogicManagerScript : MonoBehaviour
     public GameObject recorddubBar;
     public GameObject pauseBar;
     public GameObject editButton;
+    public GameObject settingPanel;
 
     public TextMeshProUGUI Label;
+    public TextMeshProUGUI SettingsLabel;
     public bool on=false;
     public bool off=false;
     public bool looping=false;
@@ -22,6 +24,10 @@ public class LogicManagerScript : MonoBehaviour
     public List<Transform> children = new List<Transform>();
     AudioSource recordedAudio;
     private float clipLength;
+    public static bool memory = false;
+    public static bool system = false;
+    public static bool edit = false;
+    public static bool rhythm = false;
 
 
     // Start is called before the first frame update
@@ -60,7 +66,7 @@ public class LogicManagerScript : MonoBehaviour
             if (recordedAudio.time>=0 && recordedAudio.time<=0.005)
             {
                 // Perform your function here when the audio clip finishes
-                Debug.Log(recordedAudio.time+"Audio clip finished playing.");
+                //Debug.Log(recordedAudio.time+"Audio clip finished playing.");
                 sync = true;
             }
         }
@@ -133,7 +139,7 @@ public class LogicManagerScript : MonoBehaviour
             }
 
         }
-        else 
+        else
         {
             on= true;
             children[3].gameObject.SetActive(true);
@@ -184,6 +190,45 @@ public class LogicManagerScript : MonoBehaviour
         }
     }
     public void EditButtonClick() {
-        
+        if(!editOn)
+        {
+            edit = true;
+            memory = false;
+            system = false;
+            rhythm = false;
+            settingPanel.GetComponent<SettingsPanelScript>().index = -1;
+            SettingsLabel.text = "TRACK SETTINGS";
+            Label.text = "";
+        }
+    }
+    public void MemoryButtonClick()
+    {
+        memory = true;
+        system = false;
+        rhythm = false;
+        edit = false;
+        settingPanel.GetComponent<SettingsPanelScript>().index = -1;
+        SettingsLabel.text = "MEMORY SETTINGS";
+        Label.text = "";
+    }
+    public void SystemButtonClick()
+    {
+        system = true;
+        memory = false;
+        rhythm = false;
+        edit = false;
+        settingPanel.GetComponent<SettingsPanelScript>().index = -1;
+        SettingsLabel.text = "SYSTEM SETTINGS";
+        Label.text = "";
+    }
+    public void RhythmButtonClick()
+    {
+        rhythm = true;
+        memory = false;
+        system = false;
+        edit = false;
+        settingPanel.GetComponent<SettingsPanelScript>().index = -1;
+        SettingsLabel.text = "RHYTHM SETTINGS";
+        Label.text = "";
     }
 }

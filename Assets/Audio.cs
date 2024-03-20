@@ -7,6 +7,7 @@ using System.Net;
 using UnityEditor;
 using Unity.VisualScripting;
 using System.Collections.Generic;
+using UnityEngine.Audio;
 
 public class Audio : MonoBehaviour
 {
@@ -20,6 +21,8 @@ public class Audio : MonoBehaviour
     public List<AudioSource> audioSources = new List<AudioSource>();
     public Slider slider;
     public LogicManagerScript logicUI;
+    public AudioMixerGroup loop1;
+    public AudioMixerGroup track;
 
     MemoryStream recordedAudioStream;
 
@@ -83,13 +86,20 @@ public class Audio : MonoBehaviour
 
             // Play the recorded audio clip
             // Instantiate a new GameObject to hold the audio source
-            GameObject newAudioObject = new GameObject("NewAudioSource");
-            newAudioObject.tag = "Audio";
+            GameObject newAudioObject = new GameObject("Loop1AudioSource");
+            newAudioObject.tag = "Loop1";
 
             // Add an AudioSource component to the new GameObject
             AudioSource audioSource = newAudioObject.AddComponent<AudioSource>();
+            GameObject[] audioObjects = GameObject.FindGameObjectsWithTag("Loop1");
 
+            if (audioObjects.Length > 1)
+            {
+                audioObjects[audioObjects.Length - 2].GetComponent<AudioSource>().outputAudioMixerGroup=loop1;
+            }
             audioSource.clip = recordedClip;
+            audioSource.tag = "Loop1";
+            audioSource.outputAudioMixerGroup = track;
             audioSource.Play();
             audioSource.loop = true;   
 

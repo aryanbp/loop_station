@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class KnobController : MonoBehaviour
@@ -15,6 +16,8 @@ public class KnobController : MonoBehaviour
 
     // Update text of LED Label
     public TextMeshProUGUI Label;
+
+    public GameObject SettingValues;
 
     // Update is called once per frame
     void Update()
@@ -40,11 +43,25 @@ public class KnobController : MonoBehaviour
 
             // Rotate the knob around its z-axis
             float newZIndex = Mathf.Clamp(transform.eulerAngles.z + rotationAmount, minZIndex, maxZIndex);
-            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, newZIndex);
+            if (SettingValues.GetComponent<SettingsPanelScript>().knobReset)
+            {
+                SettingValues.GetComponent<SettingsPanelScript>().knobReset = false;
+                transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, 0);
+            }
+            else if (SettingValues.GetComponent<SettingsPanelScript>().knobSet)
+            {
+                SettingValues.GetComponent<SettingsPanelScript>().knobSet = false;
+                transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.Clamp(SettingValues.GetComponent<SettingsPanelScript>().z + rotationAmount, minZIndex, maxZIndex));
+            }
+            else
+            {
+                transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, newZIndex);
+            }
 
             // Calculate the value based on the rotation angle
             float value = CalculateValueFromRotation(newZIndex);
-            Label.text = value.ToString();
+            SettingValues.GetComponent<SettingsPanelScript>().FunctionSelected(value, newZIndex);
+            /*Label.text = value.ToString();*/
         }
     }
 

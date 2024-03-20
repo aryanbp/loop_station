@@ -1,9 +1,12 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Metronome : MonoBehaviour
 {
     public float beatsPerMinute = 120f; // Initial BPM
+    public GameObject Settings;
+    public int measure = 4;
     public AudioClip metronomeSound; // Sound for the metronome
     public GameObject tapTempo;
     public GameObject tapHit;
@@ -34,7 +37,7 @@ public class Metronome : MonoBehaviour
             // If it's time for a beat
             if (beatTimer <= 0f)
             {
-                if (repet == 5)
+                if (repet == measure-1)
                 {
                     tapHit.SetActive(true);
                     ok = true;
@@ -56,6 +59,23 @@ public class Metronome : MonoBehaviour
 
                 // Schedule disabling tap tempo image after the sound ends
                 Invoke("DisableTapTempo", metronomeSound.length);
+            }
+            // Making Mapping of Function and their values to work....
+            if (Settings.GetComponent<SettingsPanelScript>().buffer["Rhythm: Level"].Count > 0)
+            {
+                GetComponent<AudioSource>().volume = float.Parse(Settings.GetComponent<SettingsPanelScript>().buffer["Rhythm: Level"][0]) / 100;
+            }
+            if (Settings.GetComponent<SettingsPanelScript>().buffer["Rhythm: Line Out"].Count > 0)
+            {
+                if(Settings.GetComponent<SettingsPanelScript>().buffer["Rhythm: Line Out"][0] == "OFF")
+                {
+                    GetComponent<AudioSource>().mute=true;
+                }
+                else
+                {
+                    GetComponent<AudioSource>().mute=false;
+                }
+
             }
         }
 
