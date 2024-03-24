@@ -141,7 +141,7 @@ public class LogicManagerScript : MonoBehaviour
         }
         else
         {
-            on= true;
+            on = true;
             children[3].gameObject.SetActive(true);
             Label.text = "Recording";
             recorddubBar.SetActive(true);
@@ -161,7 +161,7 @@ public class LogicManagerScript : MonoBehaviour
             playBar.GetComponent<ProgressBar>().Func_PlayUIAnim();
 
         }
-        else if(looping)
+        else if(looping) 
         {
             children[2].gameObject.SetActive(false);
             off = true;

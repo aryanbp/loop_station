@@ -11,7 +11,7 @@ public class CenterControlLogic : MonoBehaviour
     public GameObject startStop;
 
     bool allStart = false;
-    bool undo = false;
+    public bool undo = false;
     bool tempo = false;
     bool startMetronom = false;
     // Start is called before the first frame update

@@ -14,7 +14,7 @@ public class Audio : MonoBehaviour
     WaveInEvent waveIn;
     WaveFileWriter writer;
     bool isRecording = false;
-    bool mute = false;
+    public bool isMute=false;
 
     public Button[] startRecordingButtons;
     public Button[] stopRecordingButtons;
@@ -47,7 +47,7 @@ public class Audio : MonoBehaviour
 
     public void StartRecording()
     {
-        if (!isRecording)
+        if (!isRecording && !isMute)
         {
             // Set up WaveInEvent to capture audio from the default microphone
             waveIn = new WaveInEvent();
@@ -62,6 +62,10 @@ public class Audio : MonoBehaviour
             waveIn.StartRecording();
 
             isRecording = true;
+        }
+        else
+        {
+            PausePlayRecording();
         }
     }
 
@@ -109,11 +113,11 @@ public class Audio : MonoBehaviour
     }
     public void PausePlayRecording()
     {
-        if (mute)
+        if (GetComponent<LogicManagerScript>().off & GetComponent<LogicManagerScript>().on)
         {
             foreach (AudioSource audioSource in audioSources) {
-                audioSource.mute = false;
-                mute = false;
+                audioSource.mute = true;
+                isMute = true;
             }
                 
         }
@@ -121,19 +125,8 @@ public class Audio : MonoBehaviour
         {
             foreach (AudioSource audioSource in audioSources)
             {
-                audioSource.mute = true;
-                mute = true;
-            }
-        }
-    }
-    public void playRecording()
-    {
-        if (mute)
-        {
-            foreach (AudioSource audioSource in audioSources)
-            {
                 audioSource.mute = false;
-                mute = false;
+                isMute = false;
             }
         }
     }

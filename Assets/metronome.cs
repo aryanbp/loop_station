@@ -67,7 +67,7 @@ public class Metronome : MonoBehaviour
             }
             if (Settings.GetComponent<SettingsPanelScript>().buffer["Rhythm: Line Out"].Count > 0)
             {
-                if(Settings.GetComponent<SettingsPanelScript>().buffer["Rhythm: Line Out"][0] == "OFF")
+                if(Settings.GetComponent<SettingsPanelScript>().buffer["Rhythm: Line Out"][0] == "O")
                 {
                     GetComponent<AudioSource>().mute=true;
                 }
