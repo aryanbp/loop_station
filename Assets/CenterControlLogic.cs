@@ -32,23 +32,27 @@ public class CenterControlLogic : MonoBehaviour
             allStart = true;
             allStartStop.transform.GetChild(0).gameObject.SetActive(true);
             allStartStop.transform.GetChild(1).gameObject.SetActive(false);
-
+            GetComponent<LogicManagerScript>().Pause();
+            GetComponent<Audio>().PausePlayRecording();
         }
         else
         {
             allStart = false;
             allStartStop.transform.GetChild(0).gameObject.SetActive(false);
             allStartStop.transform.GetChild(1).gameObject.SetActive(true);
-
+            GetComponent<LogicManagerScript>().Pause();
+            GetComponent<Audio>().PausePlayRecording();
         }
     }
     public void UndoRedo()
     {
-        if (!undo)
+        if (!undo && GetComponent<LogicManagerScript>().looping)
         {
             undo = true;
             undoRedo.transform.GetChild(0).gameObject.SetActive(true);
             undoRedo.transform.GetChild(1).gameObject.SetActive(false);
+            GetComponent<LogicManagerScript>().undoBar.SetActive(true);
+            GetComponent<LogicManagerScript>().undoBar.GetComponent<ProgressBar>().Func_PlayUIAnim();
 
         }
         else
@@ -56,6 +60,8 @@ public class CenterControlLogic : MonoBehaviour
             undo = false;
             undoRedo.transform.GetChild(0).gameObject.SetActive(false);
             undoRedo.transform.GetChild(1).gameObject.SetActive(true);
+            GetComponent<LogicManagerScript>().undoBar.GetComponent<ProgressBar>().Func_StopUIAnim();
+            GetComponent<LogicManagerScript>().undoBar.SetActive(false);
 
         }
     }

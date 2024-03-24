@@ -373,6 +373,7 @@ Transform:
   m_Children:
   - {fileID: 869585863}
   - {fileID: 624071747}
+  - {fileID: 1760027398}
   - {fileID: 207540240}
   m_Father: {fileID: 634109138}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1316,7 +1317,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 542.6757
+  orthographic size: 540.68243
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2933,7 +2934,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: isClicked
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1067139024
@@ -5184,8 +5185,11 @@ MonoBehaviour:
   playBar: {fileID: 869585862}
   recorddubBar: {fileID: 624071746}
   pauseBar: {fileID: 207540237}
+  undoBar: {fileID: 1760027397}
   editButton: {fileID: 605879744}
   settingPanel: {fileID: 984027092}
+  select: {fileID: 21300000, guid: 73218c3d00c668b4abc4fa87d7b56a01, type: 3}
+  unselect: {fileID: 21300000, guid: 243c8930704f518429d69fb918afbcfa, type: 3}
   Label: {fileID: 1930629089}
   SettingsLabel: {fileID: 1135727261}
   on: 0
@@ -5193,6 +5197,7 @@ MonoBehaviour:
   looping: 0
   editOn: 0
   sync: 0
+  undoOn: 0
   children: []
 --- !u!4 &1612061554
 Transform:
@@ -5221,6 +5226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37d87ce29dfc5344a8e2b0f6f155a53c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMute: 0
   startRecordingButtons:
   - {fileID: 1067139023}
   - {fileID: 1136417293}
@@ -5808,6 +5814,99 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1760027397
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1760027398}
+  - component: {fileID: 1760027401}
+  - component: {fileID: 1760027400}
+  - component: {fileID: 1760027399}
+  m_Layer: 0
+  m_Name: UndoBar
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1760027398
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1760027397}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 121788385}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -578.421, y: -475.10696}
+  m_SizeDelta: {x: 171.2386, y: 185.7852}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1760027399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1760027397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9627ec875ab23a4487e5e431c083425, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Image: {fileID: 1760027400}
+  m_SpriteArray:
+  - {fileID: 21300000, guid: 243c8930704f518429d69fb918afbcfa, type: 3}
+  - {fileID: 21300000, guid: b8866c81d332db840abf62b3675ae3e4, type: 3}
+  m_Speed: 0.5
+--- !u!114 &1760027400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1760027397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: b8866c81d332db840abf62b3675ae3e4, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1760027401
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1760027397}
+  m_CullTransparentMesh: 1
 --- !u!1 &1827545680
 GameObject:
   m_ObjectHideFlags: 0

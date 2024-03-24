@@ -11,8 +11,11 @@ public class LogicManagerScript : MonoBehaviour
     public GameObject playBar;
     public GameObject recorddubBar;
     public GameObject pauseBar;
+    public GameObject undoBar;
     public GameObject editButton;
     public GameObject settingPanel;
+    public Sprite select;
+    public Sprite unselect;
 
     public TextMeshProUGUI Label;
     public TextMeshProUGUI SettingsLabel;
@@ -21,6 +24,7 @@ public class LogicManagerScript : MonoBehaviour
     public bool looping=false;
     public bool editOn = false;
     public bool sync = false;
+    public bool undoOn= false;
     public List<Transform> children = new List<Transform>();
     AudioSource recordedAudio;
     private float clipLength;
@@ -88,12 +92,33 @@ public class LogicManagerScript : MonoBehaviour
             pauseBar.SetActive(false);
             playBar.SetActive(false);
             playBar.GetComponent<ProgressBar>().Func_StopUIAnim();
+            GetComponent<CenterControlLogic>().UndoRedo();
         }
 }
     public void Click() 
     {
+        if (GetComponent<CenterControlLogic>().undo && on && looping)
+        {
+            GameObject[] audioObjects = GameObject.FindGameObjectsWithTag("Loop1");
 
-        if (on)
+            if (audioObjects.Length > 1)
+            {
+                audioObjects[audioObjects.Length - 1].GetComponent<AudioSource>().name="Undo?";
+                if (undoOn)
+                {
+                    undoBar.GetComponent<ProgressBar>().m_SpriteArray[0] = unselect;
+                    undoOn= false; 
+                }
+                else
+                {
+                    undoBar.GetComponent<ProgressBar>().m_SpriteArray[0] = select;
+                    undoOn = true;
+                }
+
+            }
+        }
+
+        else if (on)
         {
 
             if (looping & off)
@@ -141,7 +166,7 @@ public class LogicManagerScript : MonoBehaviour
         }
         else
         {
-            on = true;
+            on= true;
             children[3].gameObject.SetActive(true);
             Label.text = "Recording";
             recorddubBar.SetActive(true);
