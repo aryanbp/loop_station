@@ -26,7 +26,7 @@ public class LogicManagerScript : MonoBehaviour
     public bool sync = false;
     public bool undoOn= false;
     public List<Transform> children = new List<Transform>();
-    AudioSource recordedAudio;
+    GameObject[] recordedAudio;
     private float clipLength;
     public static bool memory = false;
     public static bool system = false;
@@ -63,15 +63,34 @@ public class LogicManagerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (looping)
+        if (looping && GetComponent<Audio>().PanelSettings.GetComponent<SettingsPanelScript>().buffer["Track 1: Measure"][0] == "AUTO")
         {
-            recordedAudio=GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioSource>();
-            clipLength = recordedAudio.clip.length;
+            recordedAudio=GameObject.FindGameObjectsWithTag("Loop1");
+            if (!recordedAudio[0].GetComponent<AudioSource>().isPlaying)
+            {
+                foreach (GameObject audio in recordedAudio)
+                {
+                    audio.GetComponent<AudioSource>().Play();
+                }
+            }
+            /*clipLength = recordedAudio.clip.length;
             if (recordedAudio.time>=0 && recordedAudio.time<=0.005)
             {
                 // Perform your function here when the audio clip finishes
                 //Debug.Log(recordedAudio.time+"Audio clip finished playing.");
                 sync = true;
+            }*/
+        }
+        if (!looping)
+        {
+            recordedAudio = GameObject.FindGameObjectsWithTag("Loop1");
+            if(recordedAudio.Length > 0)
+            {
+                if (!recordedAudio[0].GetComponent<AudioSource>().isPlaying)
+                {
+                    Click();
+                    GetComponent<Audio>().StopRecording();
+                }
             }
         }
     }

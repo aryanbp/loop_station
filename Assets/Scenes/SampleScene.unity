@@ -5227,6 +5227,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isMute: 0
+  PanelSettings: {fileID: 984027092}
   startRecordingButtons:
   - {fileID: 1067139023}
   - {fileID: 1136417293}
@@ -6363,8 +6364,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 16.56, y: 7.3052}
-  m_SizeDelta: {x: 1.88888, y: 3.72407}
+  m_AnchoredPosition: {x: 16.603, y: 7.28}
+  m_SizeDelta: {x: 1.97392, y: 3.84524}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1927665663
 MonoBehaviour:

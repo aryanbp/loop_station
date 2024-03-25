@@ -15,6 +15,7 @@ public class Audio : MonoBehaviour
     WaveFileWriter writer;
     bool isRecording = false;
     public bool isMute=false;
+    public GameObject PanelSettings;
 
     public Button[] startRecordingButtons;
     public Button[] stopRecordingButtons;
@@ -47,7 +48,7 @@ public class Audio : MonoBehaviour
 
     public void StartRecording()
     {
-        if (!isRecording && !isMute)
+        if (!isRecording && !isMute && !GetComponent<CenterControlLogic>().undo)
         {
             // Set up WaveInEvent to capture audio from the default microphone
             waveIn = new WaveInEvent();
@@ -105,7 +106,10 @@ public class Audio : MonoBehaviour
             audioSource.tag = "Loop1";
             audioSource.outputAudioMixerGroup = track;
             audioSource.Play();
-            audioSource.loop = true;   
+            if (PanelSettings.GetComponent<SettingsPanelScript>().buffer["Track 1: Measure"][0] == "FREE")
+            {
+                audioSource.loop = true;
+            }  
 
             audioSources.Add(audioSource);
             isRecording = false;
