@@ -30,6 +30,7 @@ public class LogicManagerScript : MonoBehaviour
     public static bool system = false;
     public static bool edit = false;
     public static bool rhythm = false;
+    public float speed;
 
 
     // Start is called before the first frame update
@@ -117,6 +118,7 @@ public class LogicManagerScript : MonoBehaviour
             playBar.GetComponent<ProgressBar>().Func_StopUIAnim();
             GetComponent<CenterControlLogic>().UndoRedo();
             settingPanel.GetComponent<SettingsPanelScript>().exit_option();
+            playBar.GetComponent<ProgressBar>().m_Speed = .04f;
         }
 }
     public void Click() 

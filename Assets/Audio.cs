@@ -103,6 +103,10 @@ public class Audio : MonoBehaviour
                 audioObjects[audioObjects.Length - 2].GetComponent<AudioSource>().outputAudioMixerGroup=loop1;
             }
             audioSource.clip = recordedClip;
+            audioSource.time = audioSource.clip.length - 0.01f;
+            if (GetComponent<LogicManagerScript>().playBar.GetComponent<ProgressBar>().m_Speed == .04f) {
+                GetComponent<LogicManagerScript>().playBar.GetComponent<ProgressBar>().m_Speed = audioSource.clip.length / 9;
+            }
             audioSource.tag = "Loop1";
             audioSource.outputAudioMixerGroup = track;
             audioSource.Play();

@@ -9,6 +9,7 @@ public class SettingsPanelScript : MonoBehaviour
 {
     public TextMeshProUGUI Label;
     public TextMeshProUGUI State;
+    string curSelectedValue;
 
     public Dictionary<string,List<string>> buffer = new Dictionary<string, List<string>>() {
         { "Memory: Level", new List<string>()},
@@ -17,13 +18,14 @@ public class SettingsPanelScript : MonoBehaviour
         {"Memory: Name",   new List < string >{"ON", "0.1" } },
          { "Sys: Auto Off", new List < string >{"ON", "0.1" }},
         {"Sys: LineOut Level", new List < string >() },
-         { "Track 1: PlayLevel",new List < string >()},
-        { "Track 1: 1Short", new List < string >() },
+         { "Track 1: Reverse", new List < string >{ "OFF", "250" } },
+        { "Track 1: PlayLevel",new List < string >()},
+        { "Track 1: 1Short", new List < string >{ "OFF", "250" } },
         { "Track 1: Track FX", new List < string >{ "ON", "0.1" } },
         { "Track 1: Play Mode", new List < string >{ "MULTI", "0.1" } },
         { "Track 1: Measure", new List < string >{ "FREE", "0.1" } },
-        { "Track 1: Loop Sync", new List < string >{ "OFF", "0.1" } },
-        { "Track 1: Tempo Sync", new List < string >{ "OFF", "0.1" } },
+        { "Track 1: Loop Sync", new List < string >{ "OFF", "250" } },
+        { "Track 1: Tempo Sync", new List < string >{ "OFF", "250" } },
         {"Rhythm: Level",new List < string >()},
         { "Rhythm: Beat",new List < string >{ "4/4", "0.4" } },
         { "Rhythm: Line Out", new List < string >{ "ON", "0.1" } },
@@ -41,13 +43,14 @@ public class SettingsPanelScript : MonoBehaviour
     };
 
     Dictionary<string, List<string>> editSettings = new Dictionary<string, List<string>>(){
+        { "Track 1: Reverse", new List<string>{"ON", "OFF" } },
         { "Track 1: PlayLevel",new List<string>()},
-        { "Track 1: 1Short", new List<string>{"OFF", "ON" } },
+        { "Track 1: 1Short", new List<string>{"ON", "OFF" } },
         { "Track 1: Track FX", new List<string>{"ON", "OFF" } },
         { "Track 1: Play Mode", new List < string > { "MULTI", "SINGLE" } },
         { "Track 1: Measure", new List < string > { "FREE", "AUTO" } },
-        { "Track 1: Loop Sync", new List < string > { "OFF", "ON" } },
-        { "Track 1: Tempo Sync", new List < string > { "OFF", "ON" } }
+        { "Track 1: Loop Sync", new List < string > { "ON", "OFF" } },
+        { "Track 1: Tempo Sync", new List < string > { "ON", "OFF" } }
     };
     
     Dictionary<string, List<string>> rhythmSettings = new Dictionary<string, List<string>>(){ 
