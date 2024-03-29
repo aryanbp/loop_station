@@ -1,9 +1,7 @@
-using System.Collections;
+using NAudio.Wave;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class LogicManagerScript : MonoBehaviour
 {
@@ -54,9 +52,15 @@ public class LogicManagerScript : MonoBehaviour
         { 
             children.Add(c);
         }
+        Debug.Log("Input Devices:");
         foreach (var device in Microphone.devices)
         {
             Debug.Log("Name: " + device);
+        }
+        Debug.Log("Output Devices:");
+        foreach (var device in DirectSoundOut.Devices)
+        {
+            Debug.Log(device.Description); // Display device names
         }
     }
 
@@ -112,6 +116,7 @@ public class LogicManagerScript : MonoBehaviour
             playBar.SetActive(false);
             playBar.GetComponent<ProgressBar>().Func_StopUIAnim();
             GetComponent<CenterControlLogic>().UndoRedo();
+            settingPanel.GetComponent<SettingsPanelScript>().exit_option();
         }
 }
     public void Click() 
@@ -139,7 +144,10 @@ public class LogicManagerScript : MonoBehaviour
 
         else if (on)
         {
-
+            if (editOn)
+            {
+                EditAnim();
+            }
             if (looping & off)
             {
                 off = false;
@@ -148,7 +156,6 @@ public class LogicManagerScript : MonoBehaviour
                 pauseBar.SetActive(false);
                 playBar.SetActive(true);
                 playBar.GetComponent<ProgressBar>().Func_PlayUIAnim();
-                children[5].gameObject.transform.GetChild(0).gameObject.SetActive(false);
                 children[5].gameObject.transform.GetChild(1).gameObject.SetActive(true);
             }
             else if (looping)
@@ -161,7 +168,6 @@ public class LogicManagerScript : MonoBehaviour
                 playBar.GetComponent<ProgressBar>().Func_StopUIAnim();
                 recorddubBar.SetActive(true);
                 recorddubBar.GetComponent<ProgressBar>().Func_PlayUIAnim();
-                EditAnim();
 
             }
             else
@@ -171,7 +177,6 @@ public class LogicManagerScript : MonoBehaviour
                 children[2].gameObject.SetActive(true);
                 if (children[5].gameObject.transform.GetChild(0).gameObject)
                 {
-                    children[5].gameObject.transform.GetChild(0).gameObject.SetActive(false);
                     children[5].gameObject.transform.GetChild(1).gameObject.SetActive(true);
                 }
                 Label.text = "Looping";
@@ -185,7 +190,11 @@ public class LogicManagerScript : MonoBehaviour
         }
         else
         {
-            on= true;
+            if (editOn)
+            {
+                EditAnim();
+            }
+            on = true;
             children[3].gameObject.SetActive(true);
             Label.text = "Recording";
             recorddubBar.SetActive(true);
@@ -215,26 +224,40 @@ public class LogicManagerScript : MonoBehaviour
             pauseBar.SetActive(true); 
             if (editOn)
             {
-                children[5].gameObject.transform.GetChild(1).gameObject.GetComponent<ProgressBar>().Func_StopUIAnim();
+                children[5].gameObject.transform.GetChild(0).gameObject.GetComponent<ProgressBar>().Func_StopUIAnim();
                 children[5].gameObject.transform.GetChild(1).gameObject.SetActive(true);
             }
         }
     }
     public void EditAnim() {
-        if (!editOn && on && looping)
+        if (!editOn && on && looping || !editOn)
         {
-            editOn = true;
-            children[5].gameObject.transform.GetChild(1).gameObject.GetComponent<ProgressBar>().Func_PlayUIAnim();
+            EditButtonClick();
+            editOn = true; 
+            if (children[5].gameObject.transform.GetChild(1).gameObject)
+            {
+                children[5].gameObject.transform.GetChild(1).gameObject.SetActive(false);
+            }
+            children[5].gameObject.transform.GetChild(0).gameObject.GetComponent<ProgressBar>().Func_PlayUIAnim();
+            
+        }
+        else if(editOn && on && looping)
+        {
+            editOn = false;
+            children[5].gameObject.transform.GetChild(0).gameObject.GetComponent<ProgressBar>().Func_StopUIAnim();
+            children[5].gameObject.transform.GetChild(1).gameObject.SetActive(true);
+            settingPanel.GetComponent<SettingsPanelScript>().exit_option();
         }
         else if(editOn)
         {
             editOn = false;
-            children[5].gameObject.transform.GetChild(1).gameObject.GetComponent<ProgressBar>().Func_StopUIAnim();
-            children[5].gameObject.transform.GetChild(1).gameObject.SetActive(true);
+            children[5].gameObject.transform.GetChild(0).gameObject.GetComponent<ProgressBar>().Func_StopUIAnim();
+            settingPanel.GetComponent<SettingsPanelScript>().exit_option();
         }
     }
-    public void EditButtonClick() {
-        if(!editOn)
+    public void EditButtonClick()
+    {
+        if (!editOn)
         {
             edit = true;
             memory = false;
