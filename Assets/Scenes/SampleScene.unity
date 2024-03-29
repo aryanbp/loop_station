@@ -2439,13 +2439,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: d16dffcc7766ef24faa4c88f0fae01c2, type: 3}
   - {fileID: 21300000, guid: 576ceae3e18134948a6eaff6d44ec0bb, type: 3}
   - {fileID: 21300000, guid: f8a578ff49f04a2458440205231e9e21, type: 3}
-  - {fileID: 21300000, guid: 81f025e3c7c1d354bbb18a9c02f2286c, type: 3}
-  - {fileID: 21300000, guid: 0c33f0481bb9ce24a8bc979c30619662, type: 3}
-  - {fileID: 21300000, guid: 47a11dc3e054f59418686f34b7f52dd4, type: 3}
-  - {fileID: 21300000, guid: 8278e99be439a9244bb04b0588ac164c, type: 3}
-  - {fileID: 21300000, guid: fa62c76c9fb30fc46b22530da566a2ef, type: 3}
-  - {fileID: 21300000, guid: 8118e204e6e8b17448de0358c7356aad, type: 3}
-  - {fileID: 21300000, guid: cc52c6491a6d57e44a863326317f65cc, type: 3}
   m_Speed: 0.04
 --- !u!114 &869585865
 MonoBehaviour:
@@ -2577,6 +2570,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Label: {fileID: 1135727261}
   State: {fileID: 1930629089}
+  loop1: {fileID: 3623245586281486943, guid: e39cebd00d4643a46a9d5c5604c962d5, type: 2}
+  track: {fileID: 6305675676212882108, guid: e39cebd00d4643a46a9d5c5604c962d5, type: 2}
+  oneShot: 0
   index: -1
   knobReset: 0
   knobSet: 0
@@ -5187,6 +5183,7 @@ MonoBehaviour:
   sync: 0
   undoOn: 0
   children: []
+  speed: 0
 --- !u!4 &1612061554
 Transform:
   m_ObjectHideFlags: 0

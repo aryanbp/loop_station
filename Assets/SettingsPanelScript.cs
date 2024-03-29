@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Audio;
 using static Unity.VisualScripting.Metadata;
 
 public class SettingsPanelScript : MonoBehaviour
 {
     public TextMeshProUGUI Label;
     public TextMeshProUGUI State;
-    string curSelectedValue;
+    public AudioMixerGroup loop1;
+    public AudioMixerGroup track;
+    string loopVolume = "VolumeLoop1";
+    public bool oneShot = false;
 
     public Dictionary<string,List<string>> buffer = new Dictionary<string, List<string>>() {
         { "Memory: Level", new List<string>()},
@@ -206,6 +210,62 @@ public class SettingsPanelScript : MonoBehaviour
             State.text = value.ToString();
             buffer[Label.text].Add(value.ToString());
             buffer[Label.text].Add(z.ToString());
+        }
+        FunctionHandler(function, buffer[Label.text][0]);
+    }
+    public void FunctionHandler(string func, string value)
+    {
+        GameObject[] audioObjects = GameObject.FindGameObjectsWithTag("Loop1");
+        if (func== "Track 1: Reverse")
+        {
+            if(audioObjects.Length > 0)
+            {
+                if (value == "ON" && audioObjects[0].GetComponent<AudioSource>().pitch == 1)
+                {
+                    foreach (GameObject obj in audioObjects)
+                    {
+                        obj.GetComponent<AudioSource>().pitch = -1;
+                    }
+                }
+                else if (value == "OFF" && audioObjects[0].GetComponent<AudioSource>().pitch == -1)
+                {
+                    foreach (GameObject obj in audioObjects)
+                    {
+                        obj.GetComponent<AudioSource>().pitch = 1;
+                    }
+                }
+            }
+        }
+        if (func== "Track 1: PlayLevel") {
+            loop1.audioMixer.SetFloat(loopVolume, (int.Parse(value) - 1) * (20 - (-80)) / (100 - 1) - 80);
+        }
+        if (func== "Track 1: 1Short")
+        {
+            if (audioObjects.Length > 0)
+            {
+                if (value == "ON" && !oneShot)
+                {
+                    oneShot = true;
+                    foreach (GameObject obj in audioObjects)
+                    {
+                        obj.GetComponent<AudioSource>().loop=false;
+                        obj.GetComponent<AudioSource>().Pause();
+                    }
+                    foreach (GameObject obj in audioObjects)
+                    {
+                        obj.GetComponent<AudioSource>().Play();
+                    }
+                }
+                else if (value == "OFF" && oneShot)
+                {
+                    oneShot = false;
+                    foreach (GameObject obj in audioObjects)
+                    {
+                        obj.GetComponent<AudioSource>().loop = true;
+                        obj.GetComponent<AudioSource>().Play();
+                    }
+                }
+            }
         }
     }
 }

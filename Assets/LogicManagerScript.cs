@@ -143,7 +143,15 @@ public class LogicManagerScript : MonoBehaviour
 
             }
         }
-
+        else if (settingPanel.GetComponent<SettingsPanelScript>().oneShot)
+        {
+            playBar.GetComponent<ProgressBar>().Func_RestartUIAnim();
+            GameObject[] audioObjects = GameObject.FindGameObjectsWithTag("Loop1");
+            foreach(GameObject obj in audioObjects)
+            {
+                obj.GetComponent<AudioSource>().Play();
+            }
+        }
         else if (on)
         {
             if (editOn)

@@ -48,7 +48,7 @@ public class Audio : MonoBehaviour
 
     public void StartRecording()
     {
-        if (!isRecording && !isMute && !GetComponent<CenterControlLogic>().undo)
+        if (!isRecording && !isMute && !GetComponent<CenterControlLogic>().undo && !PanelSettings.GetComponent<SettingsPanelScript>().oneShot)
         {
             // Set up WaveInEvent to capture audio from the default microphone
             waveIn = new WaveInEvent();
