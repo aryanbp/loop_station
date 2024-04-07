@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using static Unity.VisualScripting.Metadata;
 
@@ -10,7 +11,7 @@ public class CenterControlLogic : MonoBehaviour
     public GameObject tapTempo;
     public GameObject startStop;
 
-    bool allStart = false;
+    public bool allStart = false;
     public bool undo = false;
     bool tempo = false;
     bool startMetronom = false;
@@ -62,7 +63,17 @@ public class CenterControlLogic : MonoBehaviour
             undoRedo.transform.GetChild(1).gameObject.SetActive(true);
             GetComponent<LogicManagerScript>().undoBar.GetComponent<ProgressBar>().Func_StopUIAnim();
             GetComponent<LogicManagerScript>().undoBar.SetActive(false);
-
+            GetComponent<LogicManagerScript>().undoOn=false;
+            GetComponent<LogicManagerScript>().undoBar.GetComponent<ProgressBar>().m_SpriteArray[0] = GetComponent<LogicManagerScript>().unselect;
+            GameObject[] audioObjects = GameObject.FindGameObjectsWithTag("Loop1");
+            if (audioObjects.Length > 1)
+            {
+                if (audioObjects[audioObjects.Length - 1].GetComponent<AudioSource>().name == "Undo")
+                {
+                    GetComponent<Audio>().audioSources.RemoveAt(GetComponent<Audio>().audioSources.Count - 1);
+                    Destroy(audioObjects[audioObjects.Length - 1]);
+                }
+            }
         }
     }
     public void TabTempo() {

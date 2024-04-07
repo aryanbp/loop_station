@@ -27,6 +27,10 @@ public class Audio : MonoBehaviour
 
     MemoryStream recordedAudioStream;
 
+    public void liveAudio()
+    {
+        
+    }
     public void Start()
     {
         // Set up the buttons
@@ -133,6 +137,7 @@ public class Audio : MonoBehaviour
         {
             foreach (AudioSource audioSource in audioSources)
             {
+                audioSource.Play();
                 audioSource.mute = false;
                 isMute = false;
             }
@@ -149,12 +154,11 @@ public class Audio : MonoBehaviour
     {
         foreach (AudioSource audioSource in audioSources)
         {
-            audioSource.Stop();
-            audioSource.clip = null;
             Destroy(audioSource.gameObject);
         }
         audioSources.Clear();
         isRecording = false;
+        isMute = false;
     }
 
     void OnDataAvailable(object sender, WaveInEventArgs e)
@@ -173,4 +177,5 @@ public class Audio : MonoBehaviour
         }
         return floats;
     }
+
 }

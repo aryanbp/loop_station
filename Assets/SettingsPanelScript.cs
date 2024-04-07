@@ -12,6 +12,7 @@ public class SettingsPanelScript : MonoBehaviour
     public TextMeshProUGUI State;
     public AudioMixerGroup loop1;
     public AudioMixerGroup track;
+    public GameObject UI;
     string loopVolume = "VolumeLoop1";
     public bool oneShot = false;
 
@@ -33,7 +34,10 @@ public class SettingsPanelScript : MonoBehaviour
         {"Rhythm: Level",new List < string >()},
         { "Rhythm: Beat",new List < string >{ "4/4", "0.4" } },
         { "Rhythm: Line Out", new List < string >{ "ON", "0.1" } },
-        { "Rhythm: PlayCount", new List < string >{ "ON", "0.1" } }
+        { "Rhythm: PlayCount", new List < string >{ "ON", "0.1" } },
+        { "IFxA: Type", new List < string >{ "FILTER", "0.1" } },
+        { "IFxB: Type", new List < string >{ "PAN", "0.1" } },
+        { "IFxC: Type", new List < string >{ "DELAY", "0.1" } }
     };
     Dictionary<string, List<string>> memorySettings = new Dictionary<string, List<string>>(){
         { "Memory: Level", new List<string>()},
@@ -63,12 +67,26 @@ public class SettingsPanelScript : MonoBehaviour
         { "Rhythm: Line Out", new List < string > { "ON", "OFF" } },
         { "Rhythm: PlayCount", new List < string > { "ON", "OFF" } } 
     };
+    public Dictionary<string, List<string>> fxSettings = new Dictionary<string, List<string>>(){
+        {"IFxA: Type",new List<string>{"FILTER", "PHASER", "FLANGER", "SYNTH", "LO-FI" } },
+        { "IFxB: Type", new List < string > {"PAN", "EQ", "OCTAVE", "SLICER", "TAPE ECHO" } },
+        { "IFxC: Type", new List < string > { "DELAY", "CHORUS", "ROBOT", "VOCAL DIST", "REVERB"} }
+    };
+    Dictionary<string, Dictionary<string,List<string>>> fxA = new Dictionary<string, Dictionary<string,List<string>>>()
+    {
+        {"FILTER",new Dictionary<string, List<string>>{
+            {"Time", new List<string>() },
+            {"E.Level", new List<string>() }
+        } },
+    };
 
     List<string> settings;
+    List<string> fx_name;
     string selectedSetting;
     public int index = -1;
     public bool knobReset=false;
     public bool knobSet = false;
+    public bool options = false;
     public float z;
     // Start is called before the first frame update
     void Start()
@@ -79,7 +97,7 @@ public class SettingsPanelScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(LogicManagerScript.memory || LogicManagerScript.system || LogicManagerScript.edit || LogicManagerScript.rhythm)
+        if(LogicManagerScript.memory || LogicManagerScript.system || LogicManagerScript.edit || LogicManagerScript.rhythm || LogicManagerScript.fx)
         {
             if (LogicManagerScript.memory)
             {
@@ -101,16 +119,36 @@ public class SettingsPanelScript : MonoBehaviour
                 selectedSetting = "rhythm";
                 settings = rhythmSettings.Keys.ToList();
             }
+            else if (LogicManagerScript.fx)
+            {
+                selectedSetting = "fx";
+                settings = fxSettings.Keys.ToList();
+            }
         }
 
     }
     public void next_option() {
-        if (index < settings.Count-1)
+        if (index < settings.Count - 1 && selectedSetting != "fx")
         {
             State.text = "";
             index++;
             Label.text = settings[index];
-            if (buffer[settings[index]].Count>0 && buffer[settings[index]][0] != "")
+            if (buffer[settings[index]].Count > 0 && buffer[settings[index]][0] != "")
+            {
+                State.text = buffer[settings[index]][0];
+                z = float.Parse(buffer[settings[index]][1]);
+                knobSet = true;
+            }
+            else
+            {
+                knobReset = true;
+            }
+        }
+        else
+        {
+            State.text = "";
+            Label.text = settings[index];
+            if (buffer[settings[index]].Count > 0 && buffer[settings[index]][0] != "")
             {
                 State.text = buffer[settings[index]][0];
                 z = float.Parse(buffer[settings[index]][1]);
@@ -170,6 +208,11 @@ public class SettingsPanelScript : MonoBehaviour
             {
                 List<string> options = rhythmSettings[settings[index]];
                 ValueHandeler(settings[index], options, value,z);
+            }
+            if (selectedSetting == "fx")
+            {
+                List<string> options = fxSettings[settings[index]];
+                ValueHandeler(settings[index], options, value, z);
             }
 
         }
@@ -250,9 +293,6 @@ public class SettingsPanelScript : MonoBehaviour
                     {
                         obj.GetComponent<AudioSource>().loop=false;
                         obj.GetComponent<AudioSource>().Pause();
-                    }
-                    foreach (GameObject obj in audioObjects)
-                    {
                         obj.GetComponent<AudioSource>().Play();
                     }
                 }

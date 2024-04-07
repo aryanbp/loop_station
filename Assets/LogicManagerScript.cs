@@ -1,5 +1,7 @@
 using NAudio.Wave;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -12,6 +14,9 @@ public class LogicManagerScript : MonoBehaviour
     public GameObject undoBar;
     public GameObject editButton;
     public GameObject settingPanel;
+    public GameObject Ifx_A;
+    public GameObject Ifx_B;
+    public GameObject Ifx_C;
     public Sprite select;
     public Sprite unselect;
 
@@ -30,8 +35,8 @@ public class LogicManagerScript : MonoBehaviour
     public static bool system = false;
     public static bool edit = false;
     public static bool rhythm = false;
+    public static bool fx=false;
     public float speed;
-
 
     // Start is called before the first frame update
     void Start()
@@ -119,6 +124,12 @@ public class LogicManagerScript : MonoBehaviour
             GetComponent<CenterControlLogic>().UndoRedo();
             settingPanel.GetComponent<SettingsPanelScript>().exit_option();
             playBar.GetComponent<ProgressBar>().m_Speed = .04f;
+            if (GetComponent<CenterControlLogic>().allStart)
+            {
+                GetComponent<CenterControlLogic>().allStart = false;
+                GetComponent<CenterControlLogic>().allStartStop.transform.GetChild(0).gameObject.SetActive(false);
+                GetComponent<CenterControlLogic>().allStartStop.transform.GetChild(1).gameObject.SetActive(true);
+            }
         }
 }
     public void Click() 
@@ -129,14 +140,15 @@ public class LogicManagerScript : MonoBehaviour
 
             if (audioObjects.Length > 1)
             {
-                audioObjects[audioObjects.Length - 1].GetComponent<AudioSource>().name="Undo?";
                 if (undoOn)
                 {
+                    audioObjects[audioObjects.Length - 1].GetComponent<AudioSource>().name = "LoopAudioSource";
                     undoBar.GetComponent<ProgressBar>().m_SpriteArray[0] = unselect;
                     undoOn= false; 
                 }
                 else
                 {
+                    audioObjects[audioObjects.Length - 1].GetComponent<AudioSource>().name = "Undo";
                     undoBar.GetComponent<ProgressBar>().m_SpriteArray[0] = select;
                     undoOn = true;
                 }
@@ -167,6 +179,12 @@ public class LogicManagerScript : MonoBehaviour
                 playBar.SetActive(true);
                 playBar.GetComponent<ProgressBar>().Func_PlayUIAnim();
                 children[5].gameObject.transform.GetChild(1).gameObject.SetActive(true);
+                if (GetComponent<CenterControlLogic>().allStart)
+                {
+                    GetComponent<CenterControlLogic>().allStart = false;
+                    GetComponent<CenterControlLogic>().allStartStop.transform.GetChild(0).gameObject.SetActive(false);
+                    GetComponent<CenterControlLogic>().allStartStop.transform.GetChild(1).gameObject.SetActive(true);
+                }
             }
             else if (looping)
             {
@@ -218,10 +236,16 @@ public class LogicManagerScript : MonoBehaviour
         {
             children[2].gameObject.SetActive(true);
             off = false;
+            if (GetComponent<CenterControlLogic>().allStart)
+            {
+                GetComponent<CenterControlLogic>().allStart = false;
+                GetComponent<CenterControlLogic>().allStartStop.transform.GetChild(0).gameObject.SetActive(false);
+                GetComponent<CenterControlLogic>().allStartStop.transform.GetChild(1).gameObject.SetActive(true);
+            }
             Label.text = "Looping";
             pauseBar.SetActive(false);
             playBar.SetActive(true);
-            playBar.GetComponent<ProgressBar>().Func_PlayUIAnim();
+            playBar.GetComponent<ProgressBar>().Func_RestartUIAnim();
 
         }
         else if(looping) 
@@ -307,5 +331,31 @@ public class LogicManagerScript : MonoBehaviour
         settingPanel.GetComponent<SettingsPanelScript>().index = -1;
         SettingsLabel.text = "RHYTHM SETTINGS";
         Label.text = "";
+    }
+    public void Ifx_Click(GameObject obj)
+    {
+        Dictionary<string,int> option = new Dictionary<string, int> {
+            {"A",0 },
+            {"B",1},
+            {"C",2},
+        };
+        obj.transform.GetChild(0).gameObject.SetActive(!obj.transform.GetChild(0).gameObject.activeSelf);
+        obj.transform.GetChild(1).gameObject.SetActive(!obj.transform.GetChild(1).gameObject.activeSelf);
+        fx = true;
+        memory = false;
+        system = false;
+        rhythm = false;
+        edit = false;
+        if (obj.transform.GetChild(0).gameObject.activeSelf)
+        {
+            settingPanel.GetComponent<SettingsPanelScript>().index = option[obj.name];
+            SettingsLabel.text = settingPanel.GetComponent<SettingsPanelScript>().fxSettings.Keys.ToList()[option[obj.name]];
+            settingPanel.GetComponent<SettingsPanelScript>().next_option();
+            settingPanel.GetComponent<SettingsPanelScript>().options = obj.transform.GetChild(0).gameObject.activeSelf;
+        }
+        else
+        {
+            settingPanel.GetComponent<SettingsPanelScript>().exit_option();
+        }
     }
 }
