@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
 using static Unity.VisualScripting.Metadata;
@@ -11,15 +12,20 @@ public class SettingsPanelScript : MonoBehaviour
     public TextMeshProUGUI Label;
     public TextMeshProUGUI State;
     public AudioMixerGroup loop1;
+    public AudioMixerGroup master;
     public AudioMixerGroup track;
     public GameObject UI;
+    public GameObject centerControl;
     string loopVolume = "VolumeLoop1";
+    string masterVolume = "VolumeMaster";
+    string masterThreshold = "ThresholdMaster";
+    string masterReverb = "ReverbMaster";
     public bool oneShot = false;
 
     public Dictionary<string,List<string>> buffer = new Dictionary<string, List<string>>() {
-        { "Memory: Level", new List<string>()},
-        { "Memory: Comp",   new List<string>() },
-        { "Memory: Reverb",new List < string >() },
+        { "Master: Level", new List<string>()},
+        { "Master: Comp",   new List<string>() },
+        { "Master: Reverb",new List < string >() },
         {"Memory: Name",   new List < string >{"ON", "0.1" } },
          { "Sys: Auto Off", new List < string >{"ON", "0.1" }},
         {"Sys: LineOut Level", new List < string >() },
@@ -31,18 +37,20 @@ public class SettingsPanelScript : MonoBehaviour
         { "Track 1: Measure", new List < string >{ "FREE", "0.1" } },
         { "Track 1: Loop Sync", new List < string >{ "OFF", "250" } },
         { "Track 1: Tempo Sync", new List < string >{ "OFF", "250" } },
-        {"Rhythm: Level",new List < string >()},
+        {"Rhythm: Level",new List < string >{ "70", "250" } },
         { "Rhythm: Beat",new List < string >{ "4/4", "0.4" } },
         { "Rhythm: Line Out", new List < string >{ "ON", "0.1" } },
-        { "Rhythm: PlayCount", new List < string >{ "ON", "0.1" } },
+        { "Rhythm: Measure", new List < string >() },
         { "IFxA: Type", new List < string >{ "FILTER", "0.1" } },
         { "IFxB: Type", new List < string >{ "PAN", "0.1" } },
-        { "IFxC: Type", new List < string >{ "DELAY", "0.1" } }
+        { "IFxC: Type", new List < string >{ "DELAY", "0.1" } },
+        {"Time", new List<string>() },
+        {"E.Level", new List<string>() }
     };
     Dictionary<string, List<string>> memorySettings = new Dictionary<string, List<string>>(){
-        { "Memory: Level", new List<string>()},
-        { "Memory: Comp",  new List<string>() },
-        { "Memory: Reverb",new List<string>() },
+        { "Master: Level", new List<string>()},
+        { "Master: Comp",  new List<string>() },
+        { "Master: Reverb",new List<string>() },
         {"Memory: Name",   new List<string>{"ON", "OFF" } }
     };
     Dictionary<string, List<string>> systemSettings = new Dictionary<string, List<string>>(){
@@ -64,8 +72,8 @@ public class SettingsPanelScript : MonoBehaviour
     Dictionary<string, List<string>> rhythmSettings = new Dictionary<string, List<string>>(){ 
         {"Rhythm: Level",new List<string>()}, 
         { "Rhythm: Beat", new List < string > { "2/4", "3/4", "4/4", "5/4", "6/4","7/4" } },
-        { "Rhythm: Line Out", new List < string > { "ON", "OFF" } },
-        { "Rhythm: PlayCount", new List < string > { "ON", "OFF" } } 
+        { "Rhythm: Line Out", new List < string >{"ON", "OFF" } },
+        { "Rhythm: Measure", new List < string > () } 
     };
     public Dictionary<string, List<string>> fxSettings = new Dictionary<string, List<string>>(){
         {"IFxA: Type",new List<string>{"FILTER", "PHASER", "FLANGER", "SYNTH", "LO-FI" } },
@@ -79,19 +87,38 @@ public class SettingsPanelScript : MonoBehaviour
             {"E.Level", new List<string>() }
         } },
     };
+    Dictionary<string, Dictionary<string, List<string>>> fxB = new Dictionary<string, Dictionary<string, List<string>>>()
+    {
+        {"PAN",new Dictionary<string, List<string>>{
+            {"Time", new List<string>() },
+            {"E.Level", new List<string>() }
+        } },
+    };
+    Dictionary<string, Dictionary<string, List<string>>> fxC = new Dictionary<string, Dictionary<string, List<string>>>()
+    {
+        {"DELAY",new Dictionary<string, List<string>>{
+            {"Time", new List<string>() },
+            {"E.Level", new List<string>() }
+        } },
+    };
 
     List<string> settings;
-    List<string> fx_name;
+    string fx_name;
     string selectedSetting;
     public int index = -1;
     public bool knobReset=false;
     public bool knobSet = false;
-    public bool options = false;
+    public bool opt = false;
     public float z;
+    Dictionary<int, Dictionary<string, Dictionary<string, List<string>>>> ifx;
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log(settings);
+        ifx = new Dictionary<int,Dictionary<string, Dictionary<string, List<string>>>>() {
+        {0, fxA },
+        {1, fxB},
+        {2, fxC}
+    };
     }
 
     // Update is called once per frame
@@ -121,18 +148,33 @@ public class SettingsPanelScript : MonoBehaviour
             }
             else if (LogicManagerScript.fx)
             {
-                selectedSetting = "fx";
-                settings = fxSettings.Keys.ToList();
+                if (fx_name.IsUnityNull())
+                {
+                    selectedSetting = "fx";
+                    settings = fxSettings.Keys.ToList();
+                }
             }
         }
 
     }
     public void next_option() {
-        if (index < settings.Count - 1 && selectedSetting != "fx")
+        if (index < settings.Count - 1 && !opt)
         {
-            State.text = "";
             index++;
-            Label.text = settings[index];
+            Debug.Log(index);
+            if (selectedSetting=="fx")
+            {
+                opt = true;
+                selectedSetting= "ifx";
+            }
+            if(!fx_name.IsUnityNull())
+            {
+                Label.text = fx_name+settings[index];
+            }
+            else
+            {
+                Label.text = settings[index];
+            }
             if (buffer[settings[index]].Count > 0 && buffer[settings[index]][0] != "")
             {
                 State.text = buffer[settings[index]][0];
@@ -143,30 +185,34 @@ public class SettingsPanelScript : MonoBehaviour
             {
                 knobReset = true;
             }
-        }
-        else
+        }else if (opt)
         {
-            State.text = "";
-            Label.text = settings[index];
-            if (buffer[settings[index]].Count > 0 && buffer[settings[index]][0] != "")
+            Debug.Log("in");
+            if (index == 0) { fx_name = "IFxA: "; }
+            if (index == 1) { fx_name = "IFxB: "; }
+            if (index == 2) { fx_name = "IFxC: "; }
+            settings = ifx[index][State.text].Keys.ToList();
+            Label.text = fx_name + settings[0];
+            foreach(string str in settings)
             {
-                State.text = buffer[settings[index]][0];
-                z = float.Parse(buffer[settings[index]][1]);
-                knobSet = true;
+                Debug.Log(str);
             }
-            else
-            {
-                knobReset = true;
-            }
+            opt = false;
         }
     }
     public void prev_option()
     {
         if (index>0)
         {
-            State.text = "";
             index--;
-            Label.text = settings[index];
+            if (!fx_name.IsUnityNull())
+            {
+                Label.text = fx_name + settings[index];
+            }
+            else
+            {
+                Label.text = settings[index];
+            }
             if (buffer[settings[index]].Count > 0  && buffer[settings[index]][0] != "")
             {
                 State.text = buffer[settings[index]][0];
@@ -258,7 +304,7 @@ public class SettingsPanelScript : MonoBehaviour
     }
     public void FunctionHandler(string func, string value)
     {
-        GameObject[] audioObjects = GameObject.FindGameObjectsWithTag("Loop1");
+        GameObject[] audioObjects = GameObject.FindGameObjectsWithTag("Loop0");
         if (func== "Track 1: Reverse")
         {
             if(audioObjects.Length > 0)
@@ -289,16 +335,17 @@ public class SettingsPanelScript : MonoBehaviour
                 if (value == "ON" && !oneShot)
                 {
                     oneShot = true;
+                    UI.GetComponent<LogicManagerScript>().playBar.GetComponent<ProgressBar>().Func_RestartUIAnim();
                     foreach (GameObject obj in audioObjects)
                     {
                         obj.GetComponent<AudioSource>().loop=false;
-                        obj.GetComponent<AudioSource>().Pause();
                         obj.GetComponent<AudioSource>().Play();
                     }
                 }
                 else if (value == "OFF" && oneShot)
                 {
                     oneShot = false;
+                    UI.GetComponent<LogicManagerScript>().playBar.GetComponent<ProgressBar>().Func_RestartUIAnim();
                     foreach (GameObject obj in audioObjects)
                     {
                         obj.GetComponent<AudioSource>().loop = true;
@@ -306,6 +353,43 @@ public class SettingsPanelScript : MonoBehaviour
                     }
                 }
             }
+        }
+
+        if(func== "Rhythm: Level") {
+            centerControl.GetComponent<AudioSource>().volume = float.Parse(value)/100;
+        }
+        if (func == "Rhythm: Line Out")
+        {
+                if (value == "ON" && !centerControl.GetComponent<AudioSource>().mute)
+                {
+                    centerControl.GetComponent<AudioSource>().mute = true;
+                }
+                else if (value == "OFF" && centerControl.GetComponent<AudioSource>().mute)
+                {
+                    centerControl.GetComponent<AudioSource>().mute = false;
+                }
+        }
+        if (func== "Rhythm: Beat")
+        {
+            centerControl.GetComponent<Metronome>().measure = int.Parse(value[0].ToString());
+        }
+        if (func == "Rhythm: Measure")
+        {
+            State.text = (int.Parse(value) * 2).ToString();
+            UI.GetComponent<Metronome>().beatsPerMinute = int.Parse(value)*2;
+        }
+
+        if (func== "Master: Level")
+        {
+            master.audioMixer.SetFloat(masterVolume, (int.Parse(value) - 1) * (20 - (-80)) / (100 - 1) - 80);
+        }
+        if (func == "Master: Comp")
+        {
+            master.audioMixer.SetFloat(masterThreshold, (int.Parse(value) - 1) * (0 - (-60)) / (100 - 1) - 60);
+        }
+        if (func == "Master: Reverb")
+        {
+            master.audioMixer.SetFloat(masterReverb, (int.Parse(value) - 1) * (0 - (-2500)) / (100 - 1) - 2500);
         }
     }
 }

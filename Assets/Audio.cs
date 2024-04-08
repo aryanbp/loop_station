@@ -8,6 +8,7 @@ using UnityEditor;
 using Unity.VisualScripting;
 using System.Collections.Generic;
 using UnityEngine.Audio;
+using UnityEngine.Assertions.Must;
 
 public class Audio : MonoBehaviour
 {
@@ -16,14 +17,16 @@ public class Audio : MonoBehaviour
     bool isRecording = false;
     public bool isMute=false;
     public GameObject PanelSettings;
+    public GameObject CenterControl;
 
     public Button[] startRecordingButtons;
     public Button[] stopRecordingButtons;
     public List<AudioSource> audioSources = new List<AudioSource>();
     public Slider slider;
     public LogicManagerScript logicUI;
-    public AudioMixerGroup loop1;
+    public AudioMixerGroup loop;
     public AudioMixerGroup track;
+    public string name_tag;
 
     MemoryStream recordedAudioStream;
 
@@ -52,7 +55,7 @@ public class Audio : MonoBehaviour
 
     public void StartRecording()
     {
-        if (!isRecording && !isMute && !GetComponent<CenterControlLogic>().undo && !PanelSettings.GetComponent<SettingsPanelScript>().oneShot)
+        if (!isRecording && !isMute && !CenterControl.GetComponent<CenterControlLogic>().undo && !PanelSettings.GetComponent<SettingsPanelScript>().oneShot)
         {
             // Set up WaveInEvent to capture audio from the default microphone
             waveIn = new WaveInEvent();
@@ -90,28 +93,28 @@ public class Audio : MonoBehaviour
             var waveStream = new RawSourceWaveStream(recordedAudioStream, waveIn.WaveFormat);
             byte[] buffer = new byte[recordedAudioStream.Length];
             waveStream.Read(buffer, 0, buffer.Length);
-            AudioClip recordedClip = AudioClip.Create("RecordedAudio", buffer.Length / 2, 1, waveIn.WaveFormat.SampleRate, false);
+            AudioClip recordedClip = AudioClip.Create(name_tag+"RecordedAudio", buffer.Length / 2, 1, waveIn.WaveFormat.SampleRate, false);
             recordedClip.SetData(BytesToFloat(buffer), 0);
 
             // Play the recorded audio clip
             // Instantiate a new GameObject to hold the audio source
-            GameObject newAudioObject = new GameObject("Loop1AudioSource");
-            newAudioObject.tag = "Loop1";
+            GameObject newAudioObject = new GameObject(name_tag+"AudioSource");
+            newAudioObject.tag = name_tag;
 
             // Add an AudioSource component to the new GameObject
             AudioSource audioSource = newAudioObject.AddComponent<AudioSource>();
-            GameObject[] audioObjects = GameObject.FindGameObjectsWithTag("Loop1");
+            GameObject[] audioObjects = GameObject.FindGameObjectsWithTag(name_tag);
 
             if (audioObjects.Length > 1)
             {
-                audioObjects[audioObjects.Length - 2].GetComponent<AudioSource>().outputAudioMixerGroup=loop1;
+                audioObjects[audioObjects.Length - 2].GetComponent<AudioSource>().outputAudioMixerGroup=loop;
             }
             audioSource.clip = recordedClip;
             audioSource.time = audioSource.clip.length - 0.01f;
             if (GetComponent<LogicManagerScript>().playBar.GetComponent<ProgressBar>().m_Speed == .04f) {
                 GetComponent<LogicManagerScript>().playBar.GetComponent<ProgressBar>().m_Speed = audioSource.clip.length / 9;
             }
-            audioSource.tag = "Loop1";
+            audioSource.tag = name_tag;
             audioSource.outputAudioMixerGroup = track;
             audioSource.Play();
             if (PanelSettings.GetComponent<SettingsPanelScript>().buffer["Track 1: Measure"][0] == "FREE")
@@ -148,13 +151,15 @@ public class Audio : MonoBehaviour
         audioSources[index].Stop();
         audioSources.RemoveAt(index);
 
-        Destroy(audioSources[index].gameObject);
     }
     public void ClearRecording()
     {
         foreach (AudioSource audioSource in audioSources)
         {
-            Destroy(audioSource.gameObject);
+            if (!audioSource.IsUnityNull())
+            {
+                Destroy(audioSource.gameObject);
+            }
         }
         audioSources.Clear();
         isRecording = false;

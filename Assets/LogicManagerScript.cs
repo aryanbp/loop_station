@@ -19,6 +19,7 @@ public class LogicManagerScript : MonoBehaviour
     public GameObject Ifx_C;
     public Sprite select;
     public Sprite unselect;
+    public GameObject centerControl;
 
     public TextMeshProUGUI Label;
     public TextMeshProUGUI SettingsLabel;
@@ -41,11 +42,11 @@ public class LogicManagerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //AudioSource audioSource = GetComponent<AudioSource>();
+        /*//AudioSource audioSource = GetComponent<AudioSource>();
         //audioSource.clip = Microphone.Start(Microphone.devices[0], true, 10, 44100);
         //audioSource.Play();
 
-        /*for (int i = 0; i < startRecordingButtons.Length; i++)
+        *//*for (int i = 0; i < startRecordingButtons.Length; i++)
         {
             startRecordingButtons[i].onClick.AddListener(audio.StartRecording);
         }
@@ -58,16 +59,16 @@ public class LogicManagerScript : MonoBehaviour
         { 
             children.Add(c);
         }
-        Debug.Log("Input Devices:");
+        /*Debug.Log("Input Devices:");
         foreach (var device in Microphone.devices)
         {
             Debug.Log("Name: " + device);
-        }
+        }*/
         Debug.Log("Output Devices:");
-        foreach (var device in DirectSoundOut.Devices)
+       /* foreach (var device in DirectSoundOut.Devices)
         {
             Debug.Log(device.Description); // Display device names
-        }
+        }*/
     }
 
     // Update is called once per frame
@@ -93,7 +94,7 @@ public class LogicManagerScript : MonoBehaviour
         }
         if (!looping)
         {
-            recordedAudio = GameObject.FindGameObjectsWithTag("Loop1");
+            recordedAudio = GameObject.FindGameObjectsWithTag(GetComponent<Audio>().name_tag);
             if(recordedAudio.Length > 0)
             {
                 if (!recordedAudio[0].GetComponent<AudioSource>().isPlaying)
@@ -121,22 +122,25 @@ public class LogicManagerScript : MonoBehaviour
             pauseBar.SetActive(false);
             playBar.SetActive(false);
             playBar.GetComponent<ProgressBar>().Func_StopUIAnim();
-            GetComponent<CenterControlLogic>().UndoRedo();
+            if (centerControl.GetComponent<CenterControlLogic>().undo)
+            {
+                centerControl.GetComponent<CenterControlLogic>().UndoRedo();
+            }
             settingPanel.GetComponent<SettingsPanelScript>().exit_option();
             playBar.GetComponent<ProgressBar>().m_Speed = .04f;
-            if (GetComponent<CenterControlLogic>().allStart)
+            if (centerControl.GetComponent<CenterControlLogic>().allStart)
             {
-                GetComponent<CenterControlLogic>().allStart = false;
-                GetComponent<CenterControlLogic>().allStartStop.transform.GetChild(0).gameObject.SetActive(false);
-                GetComponent<CenterControlLogic>().allStartStop.transform.GetChild(1).gameObject.SetActive(true);
+                centerControl.GetComponent<CenterControlLogic>().allStart = false;
+                centerControl.GetComponent<CenterControlLogic>().allStartStop.transform.GetChild(0).gameObject.SetActive(false);
+                centerControl.GetComponent<CenterControlLogic>().allStartStop.transform.GetChild(1).gameObject.SetActive(true);
             }
         }
 }
     public void Click() 
     {
-        if (GetComponent<CenterControlLogic>().undo && on && looping)
+        if (centerControl.GetComponent<CenterControlLogic>().undo && on && looping)
         {
-            GameObject[] audioObjects = GameObject.FindGameObjectsWithTag("Loop1");
+            GameObject[] audioObjects = GameObject.FindGameObjectsWithTag(GetComponent<Audio>().name_tag);
 
             if (audioObjects.Length > 1)
             {
@@ -179,11 +183,11 @@ public class LogicManagerScript : MonoBehaviour
                 playBar.SetActive(true);
                 playBar.GetComponent<ProgressBar>().Func_PlayUIAnim();
                 children[5].gameObject.transform.GetChild(1).gameObject.SetActive(true);
-                if (GetComponent<CenterControlLogic>().allStart)
+                if (centerControl.GetComponent<CenterControlLogic>().allStart)
                 {
-                    GetComponent<CenterControlLogic>().allStart = false;
-                    GetComponent<CenterControlLogic>().allStartStop.transform.GetChild(0).gameObject.SetActive(false);
-                    GetComponent<CenterControlLogic>().allStartStop.transform.GetChild(1).gameObject.SetActive(true);
+                    centerControl.GetComponent<CenterControlLogic>().allStart = false;
+                    centerControl.GetComponent<CenterControlLogic>().allStartStop.transform.GetChild(0).gameObject.SetActive(false);
+                    centerControl.GetComponent<CenterControlLogic>().allStartStop.transform.GetChild(1).gameObject.SetActive(true);
                 }
             }
             else if (looping)
@@ -236,11 +240,11 @@ public class LogicManagerScript : MonoBehaviour
         {
             children[2].gameObject.SetActive(true);
             off = false;
-            if (GetComponent<CenterControlLogic>().allStart)
+            if (centerControl.GetComponent<CenterControlLogic>().allStart)
             {
-                GetComponent<CenterControlLogic>().allStart = false;
-                GetComponent<CenterControlLogic>().allStartStop.transform.GetChild(0).gameObject.SetActive(false);
-                GetComponent<CenterControlLogic>().allStartStop.transform.GetChild(1).gameObject.SetActive(true);
+                centerControl.GetComponent<CenterControlLogic>().allStart = false;
+                centerControl.GetComponent<CenterControlLogic>().allStartStop.transform.GetChild(0).gameObject.SetActive(false);
+                centerControl.GetComponent<CenterControlLogic>().allStartStop.transform.GetChild(1).gameObject.SetActive(true);
             }
             Label.text = "Looping";
             pauseBar.SetActive(false);
@@ -297,6 +301,7 @@ public class LogicManagerScript : MonoBehaviour
             memory = false;
             system = false;
             rhythm = false;
+            fx = false;
             settingPanel.GetComponent<SettingsPanelScript>().index = -1;
             SettingsLabel.text = "TRACK SETTINGS";
             Label.text = "";
@@ -308,6 +313,7 @@ public class LogicManagerScript : MonoBehaviour
         system = false;
         rhythm = false;
         edit = false;
+        fx = false;
         settingPanel.GetComponent<SettingsPanelScript>().index = -1;
         SettingsLabel.text = "MEMORY SETTINGS";
         Label.text = "";
@@ -318,6 +324,7 @@ public class LogicManagerScript : MonoBehaviour
         memory = false;
         rhythm = false;
         edit = false;
+        fx = false;
         settingPanel.GetComponent<SettingsPanelScript>().index = -1;
         SettingsLabel.text = "SYSTEM SETTINGS";
         Label.text = "";
@@ -328,6 +335,7 @@ public class LogicManagerScript : MonoBehaviour
         memory = false;
         system = false;
         edit = false;
+        fx = false;
         settingPanel.GetComponent<SettingsPanelScript>().index = -1;
         SettingsLabel.text = "RHYTHM SETTINGS";
         Label.text = "";
@@ -348,10 +356,11 @@ public class LogicManagerScript : MonoBehaviour
         edit = false;
         if (obj.transform.GetChild(0).gameObject.activeSelf)
         {
+            Debug.Log(option[obj.name]);
             settingPanel.GetComponent<SettingsPanelScript>().index = option[obj.name];
             SettingsLabel.text = settingPanel.GetComponent<SettingsPanelScript>().fxSettings.Keys.ToList()[option[obj.name]];
-            settingPanel.GetComponent<SettingsPanelScript>().next_option();
-            settingPanel.GetComponent<SettingsPanelScript>().options = obj.transform.GetChild(0).gameObject.activeSelf;
+            /*settingPanel.GetComponent<SettingsPanelScript>().next_option();*/
+            settingPanel.GetComponent<SettingsPanelScript>().opt = obj.transform.GetChild(0).gameObject.activeSelf;
         }
         else
         {

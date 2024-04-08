@@ -60,23 +60,7 @@ public class Metronome : MonoBehaviour
                 // Schedule disabling tap tempo image after the sound ends
                 Invoke("DisableTapTempo", metronomeSound.length);
             }
-            // Making Mapping of Function and their values to work....
-            if (Settings.GetComponent<SettingsPanelScript>().buffer["Rhythm: Level"].Count > 0)
-            {
-                GetComponent<AudioSource>().volume = float.Parse(Settings.GetComponent<SettingsPanelScript>().buffer["Rhythm: Level"][0]) / 100;
-            }
-            if (Settings.GetComponent<SettingsPanelScript>().buffer["Rhythm: Line Out"].Count > 0)
-            {
-                if(Settings.GetComponent<SettingsPanelScript>().buffer["Rhythm: Line Out"][0] == "O")
-                {
-                    GetComponent<AudioSource>().mute=true;
-                }
-                else
-                {
-                    GetComponent<AudioSource>().mute=false;
-                }
-
-            }
+            // Making Mapping of Function and their values to work
         }
 
         // Recalculate the interval between beats based on the current BPM
