@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Audio
   - Loop1
+  - Loop0
   layers:
   - Default
   - TransparentFX
