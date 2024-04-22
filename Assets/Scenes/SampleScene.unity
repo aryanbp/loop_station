@@ -3431,7 +3431,7 @@ MonoBehaviour:
   master: {fileID: 24300002, guid: e39cebd00d4643a46a9d5c5604c962d5, type: 2}
   track: {fileID: 6305675676212882108, guid: e39cebd00d4643a46a9d5c5604c962d5, type: 2}
   UI: {fileID: 1612061552}
-  centerControl: {fileID: 0}
+  centerControl: {fileID: 1273787293}
   oneShot: 0
   index: -1
   knobReset: 0
@@ -5242,7 +5242,7 @@ AudioSource:
   m_GameObject: {fileID: 1273787293}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: e39cebd00d4643a46a9d5c5604c962d5, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -5344,7 +5344,8 @@ MonoBehaviour:
   beatsPerMinute: 71.6
   Settings: {fileID: 984027092}
   measure: 4
-  metronomeSound: {fileID: 8300000, guid: f0cb138baf3cb2645a118e618040b1e1, type: 3}
+  metronomeSound: {fileID: 8300000, guid: baa2a30a908dea9479b9540f0f8b4152, type: 3}
+  metronomeSound1: {fileID: 8300000, guid: cd7018c45d1885548bf48b06dc9a9a99, type: 3}
   tapTempo: {fileID: 115110208}
   tapHit: {fileID: 1183509226}
 --- !u!114 &1273787297

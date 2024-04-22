@@ -8,6 +8,7 @@ public class Metronome : MonoBehaviour
     public GameObject Settings;
     public int measure = 4;
     public AudioClip metronomeSound; // Sound for the metronome
+    public AudioClip metronomeSound1;
     public GameObject tapTempo;
     public GameObject tapHit;
     private AudioSource audioSource;
@@ -25,7 +26,7 @@ public class Metronome : MonoBehaviour
         // Get the AudioSource component attached to this GameObject
         audioSource = GetComponent<AudioSource>();
         // Set the AudioClip for the AudioSource
-        audioSource.clip = metronomeSound;
+        audioSource.clip = metronomeSound1;
     }
 
     void Update()
@@ -39,12 +40,14 @@ public class Metronome : MonoBehaviour
             {
                 if (repet == measure-1)
                 {
+                    audioSource.clip = metronomeSound;
                     tapHit.SetActive(true);
                     ok = true;
                     repet = 0;
                 }
                 else
                 {
+                    audioSource.clip = metronomeSound1;
                     // Enable tap tempo image when the sound starts
                     tapTempo.SetActive(true);
                     repet++;
@@ -85,6 +88,7 @@ public class Metronome : MonoBehaviour
             // Disable tap tempo image
             tapTempo.SetActive(false);
         }
+        repet = 0;
     }
 
     // Method to disable tap tempo image

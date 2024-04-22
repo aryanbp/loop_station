@@ -18,6 +18,7 @@ public class SettingsPanelScript : MonoBehaviour
     public GameObject centerControl;
     string loopVolume = "VolumeLoop1";
     string masterVolume = "VolumeMaster";
+    string metronomeVolume = "VolumeMetronome";
     string masterThreshold = "ThresholdMaster";
     string masterReverb = "ReverbMaster";
     public bool oneShot = false;
@@ -34,7 +35,7 @@ public class SettingsPanelScript : MonoBehaviour
         { "Track 1: 1Short", new List < string >{ "OFF", "250" } },
         { "Track 1: Track FX", new List < string >{ "ON", "0.1" } },
         { "Track 1: Play Mode", new List < string >{ "MULTI", "0.1" } },
-        { "Track 1: Measure", new List < string >{ "FREE", "0.1" } },
+        { "Track 1: Measure", new List < string >{ "70", "200" } },
         { "Track 1: Loop Sync", new List < string >{ "OFF", "250" } },
         { "Track 1: Tempo Sync", new List < string >{ "OFF", "250" } },
         {"Rhythm: Level",new List < string >{ "70", "250" } },
@@ -355,8 +356,9 @@ public class SettingsPanelScript : MonoBehaviour
             }
         }
 
-        if(func== "Rhythm: Level") {
-            centerControl.GetComponent<AudioSource>().volume = float.Parse(value)/100;
+        if(func== "Rhythm: Level")
+        {
+            master.audioMixer.SetFloat(metronomeVolume, (int.Parse(value) - 1) * (20 - (-80)) / (100 - 1) - 80);
         }
         if (func == "Rhythm: Line Out")
         {
@@ -376,7 +378,7 @@ public class SettingsPanelScript : MonoBehaviour
         if (func == "Rhythm: Measure")
         {
             State.text = (int.Parse(value) * 2).ToString();
-            UI.GetComponent<Metronome>().beatsPerMinute = int.Parse(value)*2;
+            centerControl.GetComponent<Metronome>().beatsPerMinute = int.Parse(value)*2;
         }
 
         if (func== "Master: Level")
